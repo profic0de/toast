@@ -13,7 +13,7 @@ int main() {
     size_t got = fread(bytes, sizeof(char), size, file);
     if (size > got) {
         free(bytes);
-        print("%i",got);
+        print("%lu",got);
         return got;
     }
     // strtok();
