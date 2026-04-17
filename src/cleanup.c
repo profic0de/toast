@@ -11,7 +11,7 @@ void auto_free(void* ptr) {
         return;
     }
     void** temp = pointers; 
-    while (temp++!=0);
+    while (*temp++);
     
     print("dif: %d",(int)(temp-pointers));
     // pointers;
