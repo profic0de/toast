@@ -1,11 +1,13 @@
 SRC = $(filter-out $(shell find . -wholename './ignore/*.c'),$(shell find . -name '*.c'))
 OBJ := $(SRC:%=./build/%.o)
 ARGS = -I. -Isrc -Wall -Wno-deprecated-declarations -Wno-nonnull -lcurl -lm
-OUT = proxy.o
+OUT = out
+
+PROGRAM_ARGS = src.sk
 
 run: $(OUT)
 	@echo --------------------
-	@./$(OUT)
+	@./$(OUT) $(PROGRAM_ARGS)
 
 $(OUT): $(OBJ)
 	gcc -g -fsanitize=address $(ARGS) $(OBJ) -o $(OUT)
@@ -19,7 +21,7 @@ $(OUT): $(OBJ)
 prod:
 	gcc $(ARGS) -o $(OUT) $(SRC)
 	@echo --------------------
-	@./$(OUT)
+	@./$(OUT) $(PROGRAM_ARGS)
 
 clean:
 	@rm -rf $(OUT)
