@@ -7,6 +7,7 @@ void* auto_free(void* ptr) {
     if (!ptr) return ptr;
     pointers = array_append(pointers, ptr);
     return ptr;
+
 }
 
 __attribute__((destructor))
