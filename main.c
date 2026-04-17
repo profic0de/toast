@@ -1,23 +1,9 @@
 #include "kit.h"
 
+struct file** files;
+
 int main() {
-    FILE* file = fopen("src.sk","r");
-    if (!file) return 1;
-
-    fseek(file, 0L, SEEK_END);  // Move pointer to the end of the file
-    size_t size = ftell(file);    // Get current position (total bytes)
-    fseek(file, 0L, SEEK_SET);
-
-    char* bytes = malloc(size+1);
-
-    size_t got = fread(bytes, sizeof(char), size, file);
-    if (size > got) {
-        free(bytes);
-        print("%lu",got);
-        return got;
-    }
-    // strtok();
-
-    free(bytes);
+    auto_free((void*)1);
+    auto_free((void*)2);
     return 0;
 }
