@@ -5,18 +5,7 @@ static void** pointers;
 
 void* auto_free(void* ptr) {
     if (!ptr) return ptr;
-    if (!pointers) {
-        pointers = calloc(2,sizeof(void*));
-        pointers[0] = ptr;
-        return ptr;
-    }
-    void** temp = pointers; 
-    while (*temp++);
-
-    int diff = (int)(temp-pointers);
-    pointers[diff-1] = ptr;
-    pointers = realloc(pointers, sizeof(void*)*(diff+1));
-    pointers[diff] = 0;
+    pointers = array_append(pointers, ptr);
     return ptr;
 }
 

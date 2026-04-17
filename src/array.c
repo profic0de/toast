@@ -1,7 +1,8 @@
-// I really like null terminated arrays
 #include "kit.h"
 
-void** array_add(void** arr, void* ptr) {
+#undef array_append
+// I really like null terminated arrays
+void** array_append(void** arr, void* ptr) {
     if (!ptr) return arr;
     if (!arr) {
         void** temp = calloc(2, sizeof(ptr));

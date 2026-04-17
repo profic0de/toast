@@ -7,6 +7,8 @@
 #include <malloc.h>
 
 void* auto_free(void* ptr);
+void** array_append(void** arr, void* ptr);
+#define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 extern struct file {
     char* filename;
