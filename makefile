@@ -18,6 +18,10 @@ $(OUT): $(OBJ)
 
 .PHONY: run, prod, clean
 
+git:
+	git add .
+	git commit -m "$$(date +%d/%m/%y)"
+
 prod:
 	gcc $(ARGS) -o $(OUT) $(SRC)
 	@echo --------------------
