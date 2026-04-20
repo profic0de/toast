@@ -13,7 +13,8 @@ int run_file(int idx) {
         case KEY:
             if (!strcmp((*temp)->value,"import")) {
                 do {
-                    file_store((*++temp)->value);
+                    if (file_store((*++temp)->value))
+                        error("File %s is not present", (*++temp)->value);
                     print("|%s|",(*temp)->value);
                 } while ((++temp)[0]->type==OPER&&(temp)[0]->value[0]==',');
             }

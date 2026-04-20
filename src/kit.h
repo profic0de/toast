@@ -8,6 +8,7 @@
 #include <malloc.h>
 #include <sys/stat.h>
 
+void error(char* message);
 void* auto_free(void* ptr);
 void** array_append(void** arr, void* ptr);
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
