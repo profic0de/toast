@@ -6,12 +6,12 @@ int parse_file(int idx);
 int file_store(char* filename) {
     struct stat sb;
     if (stat(filename, &sb) == -1) {
-        perror("stat");
+        // perror("stat");
         return 1;
     }
 
     if (!S_ISREG(sb.st_mode)) {
-        print("%s is not a file",filename);
+        // print("%s is not a file",filename);
         return 1;
     }
 

@@ -12,10 +12,10 @@ int run_file(int idx) {
         switch ((*temp)->type) {
         case KEY:
             if (!strcmp((*temp)->value,"import")) {
-                print("%s",(*++temp)->value);
-                while ((++temp)[0]->type==OPER&&(temp)[0]->value[0]==',') {
-                    print("%s",(*++temp)->value);
-                }
+                do {
+                    file_store((*++temp)->value);
+                    print("|%s|",(*temp)->value);
+                } while ((++temp)[0]->type==OPER&&(temp)[0]->value[0]==',');
             }
             break;
         
