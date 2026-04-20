@@ -73,7 +73,6 @@ static struct token* parse_token(struct file* file, size_t* offset) {
     }
     // Identifier/Keyword (including # for #include)
     else if (isalpha(*bytes) || *bytes == '_' || *bytes == '#') {
-        // For #include, consume # and letters
         if (*bytes == '#') {
             bytes++;
             while (bytes < end && isalpha(*bytes)) bytes++;
@@ -94,9 +93,22 @@ static struct token* parse_token(struct file* file, size_t* offset) {
         }
     }
     // Operator or punctuation
-    else if (strchr("+-*/()=,{}><", *bytes)) {
-        bytes++;
+    else if (strchr("+-*/()=,{}<>!", *bytes)) {
         token->type = OPER;
+        bytes++;
+        
+        // Check for two-character operators
+        if (bytes < end) {
+            char two_char[3] = {start[0], *bytes, '\0'};
+            const char* multi_ops[] = {"++", "--", "+=", "-=", "*=", "/=", "==", "!=", "<=", ">=", ">>", "<<", NULL};
+            
+            for (const char** op = multi_ops; *op; op++) {
+                if (strcmp(two_char, *op) == 0) {
+                    bytes++;  // consume second character
+                    break;
+                }
+            }
+        }
     }
     else {
         // Unknown character, skip it and return NULL
@@ -119,7 +131,7 @@ int parse_file(int idx) {
     auto_free(files[idx]->tokens);
     struct token** temp = files[idx]->tokens-1;
     while (*++temp) {
-        printf("%s\n",(*temp)->value);
+        printf("%d:%s\n",temp[0]->type,temp[0]->value);
     }
 
     return 0;
