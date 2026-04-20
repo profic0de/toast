@@ -1,16 +1,5 @@
 #include "kit.h"
 
-struct token{
-    char* value;
-    enum {
-        KEY,
-        NUM,
-        STR,
-        IDENT,
-        OPER
-    } type;
-};
-
 int get_keyword(const char *line, const char **keywords) {
     int left = 0, right = 0;
     while (keywords[right]) right++;
@@ -45,8 +34,8 @@ static struct token* parse_token(struct file* file, size_t* offset) {
     char* bytes = file->bytes + *offset;
     char* end = file->bytes + file->filelen;
     
-    // Skip whitespace
-    while (bytes < end && isspace(*bytes)) {
+    // Skip whitespace (but NOT newlines)
+    while (bytes < end && isspace(*bytes) && *bytes != '\n') {
         bytes++;
         (*offset)++;
     }
@@ -55,6 +44,19 @@ static struct token* parse_token(struct file* file, size_t* offset) {
     
     struct token* token = auto_free(calloc(1, sizeof(struct token)));
     char* start = bytes;
+    
+    // Newline(s)
+    if (*bytes == '\n') {
+        bytes++;
+        // Skip multiple consecutive newlines, treat as single newline
+        while (bytes < end && *bytes == '\n') {
+            bytes++;
+        }
+        token->type = NEWLINE;
+        token->value = NULL;
+        *offset += (bytes - start);
+        return token;
+    }
     
     // String
     if (*bytes == '"') {
@@ -71,7 +73,7 @@ static struct token* parse_token(struct file* file, size_t* offset) {
         while (bytes < end && (isdigit(*bytes) || *bytes == '.')) bytes++;
         token->type = NUM;
     }
-    // Identifier/Keyword (including # for #include)
+    // Identifier/Keyword
     else if (isalpha(*bytes) || *bytes == '_' || *bytes == '#') {
         if (*bytes == '#') {
             bytes++;
@@ -84,7 +86,7 @@ static struct token* parse_token(struct file* file, size_t* offset) {
         size_t len = bytes - start;
         
         // Check if keyword
-        const char* keywords[] = {"func", "#include", "if", "else", NULL};
+        const char* keywords[] = {"func", "import", "if", "else", NULL};
         for (const char** kw = keywords; *kw; kw++) {
             if (len == strlen(*kw) && strncmp(start, *kw, len) == 0) {
                 token->type = KEY;
@@ -104,7 +106,7 @@ static struct token* parse_token(struct file* file, size_t* offset) {
             
             for (const char** op = multi_ops; *op; op++) {
                 if (strcmp(two_char, *op) == 0) {
-                    bytes++;  // consume second character
+                    bytes++;
                     break;
                 }
             }
@@ -129,10 +131,5 @@ int parse_file(int idx) {
     size_t offset = 0;
     while ((token = parse_token(files[idx], &offset))) files[idx]->tokens = array_append(files[idx]->tokens,token);
     auto_free(files[idx]->tokens);
-    struct token** temp = files[idx]->tokens-1;
-    while (*++temp) {
-        printf("%d:%s\n",temp[0]->type,temp[0]->value);
-    }
-
     return 0;
 }

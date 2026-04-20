@@ -1,4 +1,4 @@
-#include {requests, basics}
+import requests, basics
 
 func main() {
   a = 3

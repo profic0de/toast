@@ -12,6 +12,17 @@ void* auto_free(void* ptr);
 void** array_append(void** arr, void* ptr);
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+struct token{
+    char* value;
+    enum {
+        KEY,
+        NUM,
+        STR,
+        IDENT,
+        OPER,
+        NEWLINE
+    } type;
+};
 extern struct file {
     char* filename;
     size_t filelen;
