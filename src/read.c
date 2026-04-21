@@ -1,7 +1,17 @@
 #include "kit.h"
 
 struct file** files;
-int parse_file(int idx);
+struct block {
+    enum {
+        STRING,
+        INTEGER,
+        NEWLINE,
+        FUNCTION,
+        SYMBOL,
+        KEYWORD
+    } type;
+    struct block** content;
+} root;
 
 int file_store(char* filename) {
     struct stat sb;
@@ -50,7 +60,7 @@ int file_store(char* filename) {
     
     struct file** temp = files;
     while (*temp++);
-    parse_file((int)(temp-files)-2);
+    // parse_file((int)(temp-files)-2);
 
     fclose(fd);
     return 0;
