@@ -12,9 +12,27 @@ void** array_append(void** arr, void* ptr) {
     void** temp = arr; 
     while (*temp++);
 
-    int diff = (int)(temp-arr);
+    size_t diff = (size_t)(temp-arr);
     arr[diff-1] = ptr;
     arr = realloc(arr, sizeof(void*)*(diff+1));
     arr[diff] = 0;
     return arr;
+}
+
+void str_append(char** str, char c) {
+    if (!c) return;
+    #define arr (*str)
+    if (!arr) {
+        arr = calloc(2, sizeof(c));
+        arr[0] = c;
+        return;
+    }
+    char* temp = arr;
+    while (*temp++);
+
+    size_t diff = (size_t)(temp-arr);
+    arr[diff-1] = c;
+    arr = realloc(arr, sizeof(char*)*(diff+1));
+    arr[diff] = 0;
+    return;
 }

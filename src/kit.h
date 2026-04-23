@@ -9,9 +9,14 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 
-typedef char bool;
+#define bitset(arr, bit) ((arr)[(bit) >> 3] |= (1 << ((bit) & 7)))
+#define bitget(arr, bit) (((arr)[(bit) >> 3] >> ((bit) & 7)) & 1)
+#define lookup(name, str) static unsigned char name[32] = {0}; do { for (const char* p = (str); *p; p++) { bitset(name, (unsigned char)*p); } } while (0)
+#define flip(arr) do { for (size_t i = 0; i < (32); i++) { (arr)[i] ^= 0xFF; } } while (0)
+
 extern char** files;
 void* auto_free(void* ptr);
+void str_append(char** str, char c);
 void** array_append(void** arr, void* ptr);
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)

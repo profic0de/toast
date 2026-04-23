@@ -3,12 +3,13 @@
 char** files;
 struct block {
     enum {
+        KEYWORD,
         STRING,
         INTEGER,
         NEWLINE,
         FUNCTION,
         SYMBOL,
-        KEYWORD
+        ROOT
     } type;
     union {
         struct block** blocks;
@@ -16,10 +17,28 @@ struct block {
     };
 } root;
 
-int parse_chunks(FILE* fd) {
-    char bytes[4096];
+int parse_fd(FILE* fd) {
+    lookup(spaces, " \t\n\r\v\f");
+    static unsigned char keywords[32] = {0}; for (int i = 0; i < 128; i++) if (!isalpha(i) && !isdigit(i) && i != '_') bitset(keywords, i); flip(keywords);
+
+    char* bytes = 0;
+    char mode = 0;
+    char c;
+    while ((c = getc(fd))!=EOF) {
+        switch (mode) {
+        case 0:
+            //Detecting keywords
+            if (!bitget(keywords,c)||) break;
+            str_append(&bytes, c);
+            break;
+        
+        default:
+            break;
+        }
+    }
+    printf("%s\n",bytes?bytes:"");
+    free(bytes);
     
-    fread(bytes, sizeof(char), sizeof(bytes), fd);
     return 0;
 }
 
@@ -54,7 +73,7 @@ int file_store(char* filename) {
     // char bytes[4096];
     // size_t got = fread(bytes, sizeof(char), 4096, fd);
     // bytes[got] = 0;
-    parse_chunks(fd);
+    parse_fd(fd);
 
     files = array_append(files, auto_free(strdup(filename)));
 
