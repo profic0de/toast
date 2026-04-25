@@ -28,30 +28,12 @@ int parse_fd(FILE* fd) {
     size_t line = 0;
     size_t column = 0;
     while ((c = getc(fd))!=EOF) {
-        if (c=='\n') {column = (++line-line); break;} //This break ruined all the fun :(
+        if (c=='\n') column = (++line-line);
         else column++;
 
-        switch (mode) {
-        case 0:
-            //Reading stuff
-            if (bitget(separators,c)) { //Separator detected: determine the block type and add it to the root (by now)
-                if (!bytes) break;
-                struct block* block = auto_free(calloc(1,sizeof(block)));
-
-                if (isdigit(bytes[0])) {
-                    block->type=NUMBER;
-                }
-                // root.blocks = array_append(root.blocks);
-                break;
-            }
-            str_append(&bytes, c);
-            break;
-        
-        default:
-            break;
-        }
+        str_append(&bytes, c);
     }
-    // printf("%s\n",bytes?bytes:"");
+    printf("%s\n",bytes?bytes:"");
     free(bytes);
     
     return 0;
