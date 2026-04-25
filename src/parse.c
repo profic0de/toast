@@ -5,7 +5,7 @@ struct block {
     enum {
         KEYWORD,
         STRING,
-        INTEGER,
+        NUMBER,
         NEWLINE,
         FUNCTION,
         SYMBOL,
@@ -15,22 +15,35 @@ struct block {
         struct block** blocks;
         char* content;
     };
-} root;
+} root = {.type=FUNCTION};
 
 int parse_fd(FILE* fd) {
     lookup(spaces, " \t\n\r\v\f");
-    lookup(separators, " \t\n\r\v\f,=-+()[]!");
-    lookup(digits, "1234567890._");
+    lookup(separators, " ");
     static unsigned char keywords[32] = {0}; for (int i = 0; i < 128; i++) if (!isalpha(i) && !isdigit(i) && i != '_') bitset(keywords, i); flip(keywords);
 
     char* bytes = 0;
     char mode = 0;
     char c;
+    size_t line = 0;
+    size_t column = 0;
     while ((c = getc(fd))!=EOF) {
+        if (c=='\n') {column = (++line-line); break;} //This break ruined all the fun :(
+        else column++;
+
         switch (mode) {
         case 0:
-            //Detecting keywords
-            if (bitget(keywords,c)&&!bitget(digits,bytes[0])) break;
+            //Reading stuff
+            if (bitget(separators,c)) { //Separator detected: determine the block type and add it to the root (by now)
+                if (!bytes) break;
+                struct block* block = auto_free(calloc(1,sizeof(block)));
+
+                if (isdigit(bytes[0])) {
+                    block->type=NUMBER;
+                }
+                // root.blocks = array_append(root.blocks);
+                break;
+            }
             str_append(&bytes, c);
             break;
         
@@ -38,7 +51,7 @@ int parse_fd(FILE* fd) {
             break;
         }
     }
-    printf("%s\n",bytes?bytes:"");
+    // printf("%s\n",bytes?bytes:"");
     free(bytes);
     
     return 0;
