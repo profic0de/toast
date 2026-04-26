@@ -57,8 +57,8 @@ int parse_fd(FILE* fd) {
             break;
         }
         printf("%s ",bytes?bytes:"");
-        free(bytes);
-        bytes = 0;
+        // free(bytes);
+        // bytes = 0;
 
         if (c==EOF) break;
     }
