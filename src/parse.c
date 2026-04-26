@@ -56,21 +56,8 @@ int parse_fd(FILE* fd) {
         switch (mode) {
         case 0:
             while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c);
-            // Checking the type for the new block
             ungetc(c, fd);
-            // char dots=0,is_only_digits=1;
-            // if (bytes) {
-            //     char* temp = bytes-1;
-
-            //     while (*++temp) {
-            //         if (!bitget(digits,*temp)) is_only_digits=0;
-            //         if (temp[0]=='.'&&dots<2) dots++;
-            //     }
-            // }
-            // stack_block();
             if (c==EOF) break;
-
-            // stack_block()
             
             break;
         }
