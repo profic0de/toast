@@ -35,9 +35,9 @@ int parse_fd(FILE* fd) {
     static char check;
     if (check||check++) goto skip;
     lookup(spaces, " \t\n\r\v\f");
-    lookup(digits, "0123456789._");
+    // lookup(digits, "0123456789._");
     lookup(delimiters, " \t\n\r\v\f,{}[]()<>=+-!/*\"\'");
-    lookup(double_oper, "<>=+-!/*");
+    lookup(multi_oper, "<>=+-!/*");
     skip:
     // static unsigned char keywords[32] = {0}; for (int i = 0; i < 128; i++) if (!isalpha(i) && !isdigit(i) && i != '_') bitset(keywords, i); flip(keywords);
     char* bytes = 0;
@@ -53,14 +53,27 @@ int parse_fd(FILE* fd) {
         }
         else str_append(&bytes,c);
 
-        switch (mode) {
-        case 0:
-            while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c);
-            if (c==EOF) break;
-            ungetc(c, fd);
+        if (bitget(multi_oper,c)) {
+            char c2 = getc(fd);
+            char c3 = getc(fd);
+            char cc = bitget(multi_oper,c2);
+            char count = cc+(cc&&bitget(multi_oper,c3));
+            switch (count) {
+            case 0:
+                ungetc(c3, fd);
+                ungetc(c2, fd);
+                break;
             
-            break;
+            case 1:
+                
+            default:
+                break;
+            }
         }
+
+        while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c);
+        if (c!=EOF) ungetc(c, fd);
+
         printf("%s ",bytes?bytes:"");
         free(bytes);
         bytes = 0;
