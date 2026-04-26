@@ -70,19 +70,12 @@ int parse_fd(FILE* fd) {
             
             case 1:
                 ungetc(c3, fd);
-                switch (c) {
-                case '>':
-                    if (c==c2) //ok
-                    break;
-                
-                default:
-                    break;
-                }
 
                 break;
             
             case 2:
                 
+                break;
             }
         }
 
