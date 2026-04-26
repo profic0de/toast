@@ -9,8 +9,7 @@ struct block {
         FLOAT,
         NEWLINE,
         FUNCTION,
-        SYMBOL,
-        ROOT
+        SYMBOL
     } type;
     union {
         struct block** blocks;
@@ -27,13 +26,16 @@ struct block* make_block(char type, void* ptr) {
     else if (type==NUMBER) block->num_i=(long)ptr;
     else if (type==FLOAT) block->num_f = (double)(uintptr_t)ptr;
     else block->content=ptr;
-    return block;
+    return auto_free(block);
 }
+
+#define stack_block(type, ptr) root.blocks = array_append(root.blocks, make_block(type, ptr))
 
 int parse_fd(FILE* fd) {
     static char check;
     if (check||check++) goto skip;
     lookup(spaces, " \t\n\r\v\f");
+    lookup(digits, "0123456789._");
     lookup(delimiters, " \t\n\r\v\f,{}[]()<>=+-!/*\"\'");
     lookup(double_oper, "<>=+-!/*");
     skip:
@@ -42,9 +44,11 @@ int parse_fd(FILE* fd) {
     char mode = 0;
     char c;
     while ((c = getc(fd))!=EOF) {
+        if (c=='\n') {stack_block(NEWLINE, NULL); continue;} else 
         if (bitget(spaces,c)) continue;
         else if (c=='#') { //Skip comments
             while ((c = getc(fd))!=EOF&&c!='\n');
+            stack_block(NEWLINE, NULL);
             continue;
         }
         else str_append(&bytes,c);
@@ -52,13 +56,27 @@ int parse_fd(FILE* fd) {
         switch (mode) {
         case 0:
             while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c);
+            // Checking the type for the new block
+            ungetc(c, fd);
+            // char dots=0,is_only_digits=1;
+            // if (bytes) {
+            //     char* temp = bytes-1;
+
+            //     while (*++temp) {
+            //         if (!bitget(digits,*temp)) is_only_digits=0;
+            //         if (temp[0]=='.'&&dots<2) dots++;
+            //     }
+            // }
+            // stack_block();
             if (c==EOF) break;
+
+            // stack_block()
             
             break;
         }
         printf("%s ",bytes?bytes:"");
-        // free(bytes);
-        // bytes = 0;
+        free(bytes);
+        bytes = 0;
 
         if (c==EOF) break;
     }
