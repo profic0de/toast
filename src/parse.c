@@ -36,7 +36,8 @@ int parse_fd(FILE* fd) {
     if (check||check++) goto skip;
     lookup(spaces, " \t\n\r\v\f");
     lookup(equal_oper, "+-*/%%!><&|^");
-    lookup(both_oper, "+-=><&|");
+    lookup(double_oper, "+-=><&|");
+    lookup(single_oper, "+-*/%%=!><&|^~.");
     lookup(delimiters, " \t\n\r\v\f,{}[]()+-*/%%=!><&|^~.\"\'");
     lookup(operators, "+-*/%%=!><&|^~.");
     skip:
@@ -74,6 +75,7 @@ int parse_fd(FILE* fd) {
                 break;
             
             case 2:
+                if (c=='<'||c=='>'&&c==c2&&c3=='=')
 
                 break;
             }
