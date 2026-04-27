@@ -3,7 +3,45 @@
 //
 
 void error_message(const char* filename, size_t line, size_t column, char* error) {
-    fprintf(stderr, "%s:%zu:%zu: \033[1;31merror:\033[0m %s\n", filename, line, column, error);
+    // Determine message type and color
+    const char* msg_type = "note";
+    const char* color_code = "\033[1;36m";  // cyan by default
+    const char* msg_text = error;
+    
+    // Check in order of string length (longest first to avoid partial matches)
+    if (strncmp(error, "fatal error", 11) == 0) {
+        msg_type = "fatal error";
+        color_code = "\033[1;31m";  // bright red
+        msg_text = error + 11;
+        while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
+    } else if (strncmp(error, "warning", 7) == 0) {
+        msg_type = "warning";
+        color_code = "\033[1;35m";  // purple/magenta
+        msg_text = error + 7;
+        while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
+    } else if (strncmp(error, "remark", 6) == 0) {
+        msg_type = "remark";
+        color_code = "\033[1;36m";  // cyan
+        msg_text = error + 6;
+        while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
+    } else if (strncmp(error, "error", 5) == 0) {
+        msg_type = "error";
+        color_code = "\033[1;31m";  // red
+        msg_text = error + 5;
+        while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
+    } else if (strncmp(error, "info", 4) == 0) {
+        msg_type = "info";
+        color_code = "\033[1;36m";  // cyan
+        msg_text = error + 4;
+        while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
+    } else if (strncmp(error, "note", 4) == 0) {
+        msg_type = "note";
+        color_code = "\033[1;36m";  // cyan
+        msg_text = error + 4;
+        while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
+    }
+    
+    fprintf(stderr, "%s:%zu:%zu: %s%s:%s %s\n", filename, line, column, color_code, msg_type, "\033[0m", msg_text);
     
     FILE* fd = fopen(filename, "r");
     if (!fd) return;
@@ -32,7 +70,7 @@ void error_message(const char* filename, size_t line, size_t column, char* error
             fprintf(stderr, "%5zu | ", line);
             for (size_t i = 0; line_buffer[i] && line_buffer[i] != '\n'; i++) {
                 if (i >= word_start && i < word_end) {
-                    fprintf(stderr, "\033[1;31m%c\033[0m", line_buffer[i]);
+                    fprintf(stderr, "%s%c\033[0m", color_code, line_buffer[i]);
                 } else {
                     fprintf(stderr, "%c", line_buffer[i]);
                 }
@@ -43,7 +81,7 @@ void error_message(const char* filename, size_t line, size_t column, char* error
             fprintf(stderr, "      | ");
             for (size_t i = 0; i < word_start; i++) fprintf(stderr, " ");
             
-            fprintf(stderr, "\033[1;31m");
+            fprintf(stderr, "%s", color_code);
             fprintf(stderr, "^");
             for (size_t i = word_start + 1; i < word_end; i++) {
                 fprintf(stderr, "~");

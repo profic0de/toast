@@ -53,7 +53,7 @@ int parse_fd(FILE* fd) {
         }
         else str_append(&bytes,c);
 
-        size_t s_line=line, s_column=column, s_ch=ch;
+        size_t s_line=line, s_column=column;
 
         if (c=='\''||c=='\"') {
             char cc=c, p=0;
