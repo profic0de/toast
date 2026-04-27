@@ -1,8 +1,7 @@
 #include "kit.h"
+// This file wasn't made by a human
 
-//
-
-void error_message(const char* filename, size_t line, size_t column, char* error) {
+void error_message(const char* filename, size_t s_line, size_t s_column, char* error) {
     // Determine message type and color
     const char* msg_type = "note";
     const char* color_code = "\033[1;36m";  // cyan by default
@@ -41,7 +40,7 @@ void error_message(const char* filename, size_t line, size_t column, char* error
         while (*msg_text && (*msg_text == ' ' || *msg_text == ':')) msg_text++;
     }
     
-    fprintf(stderr, "%s:%zu:%zu: %s%s:%s %s\n", filename, line + 1, column, color_code, msg_type, "\033[0m", msg_text);
+    fprintf(stderr, "%s:%zu:%zu: %s%s:%s %s\n", filename, s_line + 1, s_column, color_code, msg_type, "\033[0m", msg_text);
     
     FILE* fd = fopen(filename, "r");
     if (!fd) return;
@@ -50,9 +49,9 @@ void error_message(const char* filename, size_t line, size_t column, char* error
     size_t current_line = 0;
     
     while (fgets(line_buffer, sizeof(line_buffer), fd)) {
-        if (current_line == line) {
-            // Find word boundaries around the error column
-            size_t col_idx = column - 1;
+        if (current_line == s_line) {
+            // Find word boundaries around the error s_column
+            size_t col_idx = s_column - 1;
             size_t word_start = col_idx;
             size_t word_end = col_idx;
             
@@ -66,8 +65,8 @@ void error_message(const char* filename, size_t line, size_t column, char* error
                 word_end++;
             }
             
-            // Print line with colored token
-            fprintf(stderr, "%5zu | ", line + 1);
+            // Print s_line with colored token
+            fprintf(stderr, "%5zu | ", s_line + 1);
             for (size_t i = 0; line_buffer[i] && line_buffer[i] != '\n'; i++) {
                 if (i >= word_start && i < word_end) {
                     fprintf(stderr, "%s%c\033[0m", color_code, line_buffer[i]);
