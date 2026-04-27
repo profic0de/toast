@@ -63,25 +63,29 @@ int parse_fd(FILE* fd) {
                 char cc = bitget(operators,c2);
                 count = cc+(cc&&bitget(operators,c3));
             }
-            switch (count) {
-            case 0:
-                ungetc(c3, fd);
-                ungetc(c2, fd);
-                break;
-            
+            switch (count) {      
+            case 2:
+                if ((c=='<'||c=='>')&&c==c2&&c3=='=') {
+                    str_append(&bytes,c);
+                    str_append(&bytes,c);
+                    break;
+                }
+
             case 1:
                 ungetc(c3, fd);
 
                 break;
-            
-            case 2:
-                if (c=='<'||c=='>'&&c==c2&&c3=='=')
 
+            case 0:
+                ungetc(c3, fd);
+                ungetc(c2, fd);
                 break;
             }
+            goto skip1;
         }
 
         while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c); ungetc(c, fd);
+        skip1:
 
         printf("%s ",bytes?bytes:"");
         free(bytes);
