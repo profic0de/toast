@@ -105,7 +105,7 @@ int parse_fd(FILE* fd) {
         char* error = handle_token(&bytes);
 
         if (error) {
-            //TODO: Make a function that will trigger an error
+            //TODO: Modify the function that will print a C like error
         }
 
         printf("%s ",bytes?bytes:"");
