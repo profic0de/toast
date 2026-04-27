@@ -126,8 +126,9 @@ int parse_fd(FILE* fd) {
 }
 
 char* handle_token(char** bytes) {
-
-    return strdup("unimplemented");
+    if (bytes[0][0]=='(')
+        return strdup("unimplemented");
+    return NULL;
 }
 
 
