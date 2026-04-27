@@ -1,7 +1,8 @@
 #include "kit.h"
-// This file wasn't made by a human
 
-void error_message(const char* filename, size_t s_line, size_t s_column, char* error) {
+//This file wasn't made by a human
+
+void error_message(const char* filename, size_t s_line, size_t s_column, size_t token_len, char* error) {
     // Determine message type and color
     const char* msg_type = "note";
     const char* color_code = "\033[1;36m";  // cyan by default
@@ -50,22 +51,10 @@ void error_message(const char* filename, size_t s_line, size_t s_column, char* e
     
     while (fgets(line_buffer, sizeof(line_buffer), fd)) {
         if (current_line == s_line) {
-            // Find word boundaries around the error s_column
-            size_t col_idx = s_column - 1;
-            size_t word_start = col_idx;
-            size_t word_end = col_idx;
+            size_t word_start = s_column - 1;
+            size_t word_end = word_start + token_len;
             
-            // Find start of word
-            while (word_start > 0 && (isalnum(line_buffer[word_start-1]) || line_buffer[word_start-1] == '_')) {
-                word_start--;
-            }
-            
-            // Find end of word
-            while (isalnum(line_buffer[word_end]) || line_buffer[word_end] == '_') {
-                word_end++;
-            }
-            
-            // Print s_line with colored token
+            // Print line with colored token
             fprintf(stderr, "%5zu | ", s_line + 1);
             for (size_t i = 0; line_buffer[i] && line_buffer[i] != '\n'; i++) {
                 if (i >= word_start && i < word_end) {

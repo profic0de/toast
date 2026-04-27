@@ -107,7 +107,7 @@ int parse_fd(FILE* fd) {
         if (error) {
             char** temp = files;
             while (*++temp);
-            error_message(*(--temp), s_line, s_column, error);
+            error_message(*(--temp), s_line, s_column, strlen(bytes), error);
             free(bytes);
             free(error);
             return 1;
