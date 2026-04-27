@@ -105,7 +105,12 @@ int parse_fd(FILE* fd) {
         char* error = handle_token(&bytes);
 
         if (error) {
-            //TODO: Modify the function that will print a C like error
+            char** temp = files;
+            while (*++temp);
+            error_message(*(--temp), s_line, s_column, error);
+            free(bytes);
+            free(error);
+            return 1;
         }
 
         printf("%s ",bytes?bytes:"");
@@ -122,7 +127,7 @@ int parse_fd(FILE* fd) {
 
 char* handle_token(char** bytes) {
 
-    return NULL;
+    return strdup("unimplemented");
 }
 
 
