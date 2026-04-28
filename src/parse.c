@@ -113,13 +113,13 @@ int parse_fd(FILE* fd) {
             return 1;
         }
 
-        printf("%s ",bytes?bytes:"");
+        // printf("%s ",bytes?bytes:"");
         free(bytes);
         bytes = 0;
 
         if (c==EOF) break;
     }
-    printf("%s\n",bytes?bytes:"");
+    // printf("%s\n",bytes?bytes:"");
     free(bytes);
     
     return 0;
