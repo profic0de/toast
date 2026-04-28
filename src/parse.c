@@ -31,6 +31,7 @@ struct block* make_block(char type, void* ptr) {
 
 #define stack_block(type, ptr) root.blocks = array_append(root.blocks, make_block(type, ptr))
 
+char* handle_token(char** bytes);
 int parse_fd(FILE* fd) {
     static char check;
     if (check||check++) goto skip;
@@ -101,7 +102,6 @@ int parse_fd(FILE* fd) {
         while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c); ungetc(c, fd);
         skip1:
 
-        char* handle_token(char** bytes);
         char* error = handle_token(&bytes);
 
         if (error) {
@@ -114,21 +114,17 @@ int parse_fd(FILE* fd) {
         }
 
         // printf("%s ",bytes?bytes:"");
-        free(bytes);
+        // free(bytes);
         bytes = 0;
 
         if (c==EOF) break;
     }
     // printf("%s\n",bytes?bytes:"");
+    handle_token(NULL);
     free(bytes);
     
     return 0;
 }
-
-char* handle_token(char** bytes) {
-    return strdup("unimplemented");
-}
-
 
 int file_store(char* filename) {
     struct stat sb;
