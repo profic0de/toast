@@ -16,6 +16,7 @@
 #define flip(arr) do { for (size_t i = 0; i < (32); i++) { (arr)[i] ^= 0xFF; } } while (0)
 
 extern size_t line, column;
+void cleanup(void);
 int __getc(FILE *__stream);
 int __ungetc(int __c, FILE *__stream);
 #define getc(__stream) __getc(__stream)

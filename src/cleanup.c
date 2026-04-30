@@ -10,9 +10,10 @@ void* auto_free(void* ptr) {
 }
 
 __attribute__((destructor))
-static void cleanup() {
+void cleanup() {
     if (!pointers) return;
     void** temp = pointers;
     while (*temp) free(*temp++);
-    free(pointers);   
+    free(pointers);
+    pointers = 0;
 }

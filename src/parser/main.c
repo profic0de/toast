@@ -3,13 +3,11 @@
 char** tokens;
 
 char* handle_token(char** bytes) {
-    char* token = bytes ? *bytes : NULL;
-    static char* previous_token = NULL;
+    if (bytes) return (tokens = array_append(tokens, strdup(*bytes)),NULL);
+    
+    char** temp = tokens-1;
 
-    if (previous_token&&token&&previous_token[0]=='>')
-        print("%s",token);
+    while (*++temp);
 
-    if (previous_token) previous_token = (free(previous_token), NULL);
-    previous_token = token;
     return NULL;
 }

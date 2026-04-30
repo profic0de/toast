@@ -114,6 +114,8 @@ int parse_fd(FILE* fd) {
         while ((c = getc(fd))!=EOF&&!bitget(delimiters,c)) str_append(&bytes,c); ungetc(c, fd);
         skip1:
 
+        bytes = auto_free(bytes);
+
         char* error = handle_token(&bytes);
 
         if (error) {
@@ -183,6 +185,6 @@ int file_store(char* filename) {
 }
 
 __attribute__((destructor))
-static void cleanup() {
+static void clean() {
     free(files);
 }
