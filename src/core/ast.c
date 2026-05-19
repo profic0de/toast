@@ -18,21 +18,22 @@ char* type_to_char(enum token_type token_type) {
     case_macro(SYMBOL);
     case_macro(STRING);
     case_macro(PATH);
+    case_macro(WORD);
 
     #undef case_macro
     default:
-        return (strcpy(str, "UNKNOWN"), str);
+        return (strcpy(str, "[ ]"), str);
     }
     return str;
 }
 
 char* handle_token(char** bytes, enum token_type token_type) {
-    // if (bytes) print("type: %s, token: %s",type_to_char(token_type),*bytes);
-    if (bytes) {
-        tokens = array_append(tokens, strdup(*bytes));
-        types = array_append(types, token_type);
-        return NULL;
-    }
+    if (bytes) print("type: %s, token: %s",type_to_char(token_type),*bytes);
+    // if (bytes) {
+    //     tokens = array_append(tokens, strdup(*bytes));
+    //     types = array_append(types, token_type);
+    //     return NULL;
+    // }
 
     // size_t len = 0; 
     // for (size_t i=0; tokens[i]; len=++i) types[i] = types[i*2]; // Shifting the types array bc the enum is int and the array consists of pointers so i need to multiply the index by 2 to skip the 0's :)
