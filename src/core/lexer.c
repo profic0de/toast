@@ -53,7 +53,7 @@ int parse_fd(FILE* fd) {
             token_type = SYMBOL;
             str_append(&bytes, c);
             size_t val = c, a = column;
-            if (lookup(*(size_t*)"[]{}();,", c)||c=='.') c=getc(fd);
+            if (lookup(*(size_t*)"[]{}();,", c)||c=='.'||c=='~') c=getc(fd);
             else while (chr&&operators[c]&&(val=(val<<8)|c)) str_append(&bytes, c);
             if (val&0xFF000000UL) return (free(bytes), error_message(file->filename, line-1, a, 3, "error: invalid symbol"), 1);
             ungetc(c, fd);
