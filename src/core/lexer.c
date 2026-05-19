@@ -80,7 +80,6 @@ int parse_fd(FILE* fd) {
                 } if (p=='.'&&!isalpha(c)) return (free(bytes), error_message(file->filename, line, col+1, 1, "error: invalid keyword"), 1);
                 if (c=='.') token_type = PATH;
                 if (p==c&&c=='.') return (free(bytes), error_message(file->filename, line, column, 1, "error: expected a keyword"), 1);
-                // if (token_type==PATH);
                 str_append(&bytes, (p=c));
                 col = column;
                 val = (val<<8)|c;
