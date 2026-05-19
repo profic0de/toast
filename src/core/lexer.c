@@ -12,7 +12,8 @@ int parse_fd(FILE* fd) {
     while (*++_list) operators[(int)*_list]++;
     skip:
 
-    struct file** file = files-1; while (*++file); file -= 1;
+    struct file** f = files-1; while (*++f); f -= 1;
+    struct file* file = f[0];
     #define chr ((c=getc(fd))!=EOF)
 
     int c = 0;
@@ -20,13 +21,20 @@ int parse_fd(FILE* fd) {
     while (c!=EOF) {
         enum token_type token_type = NONE;
 
-        // [ ] Getting the token type
         if (!chr) break;
         if (isspace(c)) continue;
         if (c=='#') {
             size_t val = 0;
-            while (chr&&c!='\n') if (!(val&((size_t)0xFF<<(8*6)))) val = (val<<8)|c; else str_append(&bytes, c);
-            if (val==((size_t)'requ'<<(8*3)|'ire')) printf("Module requires: %s\n", bytes+1);
+            while (chr&&c!='\n') if (!(val&((size_t)0xFF<<(8*7)))) val = (val<<8)|c; else str_append(&bytes, c);
+            if (val==((size_t)'requ'<<(8*4)|'ire ')&&((c=bytes?bytes[0]:0)=='\''||c=='"'||c=='<')) {
+                char* b = bytes+1;
+                char e = bytes[0]=='<'?'>':bytes[0];
+
+                while (b[0]&&b[0]!=e) b++;
+
+                // TODO: Implement requirement loading (really easy)
+                // printf("This module requires: %.*s\n", (int)(b-bytes-1), bytes+1);
+            }
             bytes = (free(bytes), NULL);
             continue;
         }
@@ -36,16 +44,18 @@ int parse_fd(FILE* fd) {
             str_append(&bytes, c);
             while (chr) {
                 if (isspace(c)||(operators[c]&&c!='.')) break;
-                else if (isalpha(c)) return (free(bytes),error_message(file[0]->filename, line, column, 1, "error: a number can't contain letters"), 1);
+                else if (isalpha(c)) return (free(bytes),error_message(file->filename, line, column, 1, "error: a number can't contain letters"), 1);
                 else if (c=='.'&&token_type==NUMBER) token_type = FLOAT;
-                else if (c=='.') return (free(bytes),error_message(file[0]->filename, line, column, 1, "error: a number can only have one dot"), 1);
+                else if (c=='.') return (free(bytes),error_message(file->filename, line, column, 1, "error: a number can only have one dot"), 1);
                 str_append(&bytes, c);
             }
         } else if (operators[c]) {
             token_type = SYMBOL;
             str_append(&bytes, c);
+            size_t val = c, a = column;
             if (lookup(*(size_t*)"[]{}();,", c)||c=='.') c=getc(fd);
-            else while (chr&&operators[c]) str_append(&bytes, c);
+            else while (chr&&operators[c]&&(val=(val<<8)|c)) str_append(&bytes, c);
+            if (val&0xFF000000UL) return (free(bytes), error_message(file->filename, line-1, a, 3, "error: invalid symbol"), 1);
             ungetc(c, fd);
         } else if (c=='\''||c=='"') {
             token_type = STRING;
@@ -53,7 +63,7 @@ int parse_fd(FILE* fd) {
             char b = c, p = 0, po = 0;
             str_append(&bytes, c);
             while (chr&&c==b?(po!=p&&p=='\\'):1&&c!='\n') po = (str_append(&bytes, c), p), p = c;
-            if (c=='\n') return (free(bytes), error_message(file[0]->filename, line-1, a, 1, "error: string not closed"), 1);
+            if (c=='\n') return (free(bytes), error_message(file->filename, line-1, a, 1, "error: string not closed"), 1);
         } else {
             token_type = KEYWORD;
             char p = 0;
@@ -65,11 +75,11 @@ int parse_fd(FILE* fd) {
                 if (!(isalnum(c)||c=='.')) {
                     if (p=='.') {
                         if (c=='\n') ungetc(c, fd);
-                        return (free(bytes), error_message(file[0]->filename, line, col+1, 1, "error: expected a keyword"), 1);
+                        return (free(bytes), error_message(file->filename, line, col+1, 1, "error: expected a keyword"), 1);
                     } break;
-                } if (p=='.'&&!isalpha(c)) return (free(bytes), error_message(file[0]->filename, line, col+1, 1, "error: invalid keyword"), 1);
+                } if (p=='.'&&!isalpha(c)) return (free(bytes), error_message(file->filename, line, col+1, 1, "error: invalid keyword"), 1);
                 if (c=='.') token_type = PATH;
-                if (p==c&&c=='.') return (free(bytes), error_message(file[0]->filename, line, column, 1, "error: expected a keyword"), 1);
+                if (p==c&&c=='.') return (free(bytes), error_message(file->filename, line, column, 1, "error: expected a keyword"), 1);
                 // if (token_type==PATH);
                 str_append(&bytes, (p=c));
                 col = column;
