@@ -16,10 +16,13 @@ int __getc(FILE *__stream);
 int __ungetc(int __c, FILE *__stream);
 #define getc(__stream) __getc(__stream)
 #define ungetc(__c, __stream) __ungetc(__c, __stream)
+struct AST;
 extern struct file {
     char* filename;
     char** requirements;
+    struct AST* ast;
 }** files;
+
 void* auto_free(void* ptr);
 void str_append(char** str, char c);
 int dict_append(char*** arr, char* ptr);
