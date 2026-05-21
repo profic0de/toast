@@ -51,6 +51,7 @@ struct AST {
 
         OPERATION,
         VALUE,
+        SCOPE
     } type;
 };
 
