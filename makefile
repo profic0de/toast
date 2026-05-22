@@ -16,7 +16,7 @@ $(OUT): $(OBJ)
 	@mkdir -p $(dir $@)
 	gcc -g -fsanitize=address $(ARGS) -c $< -o $@
 
-.PHONY: run, prod, clean, git, make
+.PHONY: run, prod, clean, git, make, ai
 
 git:
 	@git add .
@@ -36,3 +36,7 @@ prod:
 clean:
 	@rm -rf $(OUT)
 	@rm -rf ./build/
+
+ai: # Portable wikipedia XD
+	@python ~/mcords/ai/main.py
+	@rm -rf history.txt
