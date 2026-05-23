@@ -28,7 +28,7 @@ char* type_to_char(enum token_type token_type) {
 }
 
 char* handle_token(char** bytes, enum token_type token_type) {
-    // if (bytes) print("type: %s, token: %s",type_to_char(token_type),*bytes);
+    if (bytes) print("type: %s, token: %s",type_to_char(token_type),*bytes);
     // if (bytes) {
     //     tokens = array_append(tokens, strdup(*bytes));
     //     types = array_append(types, token_type);
