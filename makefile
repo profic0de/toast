@@ -26,7 +26,7 @@ git:
 make: # Used to be called 'test' but I renamed it to 'make' because of muscle memory
 	gcc $(ARGS) -o ./ignore/test ./ignore/test.c
 	@echo --------------------
-	@./ignore/test $(PROGRAM_ARGS)
+	@cd ./ignore && ./test $(PROGRAM_ARGS)
 
 prod:
 	gcc $(ARGS) -o $(OUT) $(SRC)
