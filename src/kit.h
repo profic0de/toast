@@ -1,8 +1,12 @@
 #ifndef KIT_H
 #define KIT_H
 
-#include <ctype.h>
+// open, read, etc
+#include <fcntl.h>
+#include <unistd.h>
 // #include <stdio.h>
+
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <malloc.h>

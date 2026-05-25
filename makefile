@@ -3,7 +3,8 @@ OBJ := $(SRC:%=./build/%.o)
 ARGS = -O3 -std=c23 -I. -Isrc -Wall -Wno-misleading-indentation -Wno-deprecated-declarations -Wno-nonnull -Wno-sequence-point -Wno-multichar
 OUT = out
 
-PROGRAM_ARGS = src.t
+# Gonna use a very big file so i'll optimize the lexer
+PROGRAM_ARGS = tests/200k.t
 
 run: $(OUT)
 	@echo --------------------

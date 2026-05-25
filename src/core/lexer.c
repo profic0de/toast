@@ -1,6 +1,6 @@
 #include "kit.h"
 
-struct file ** files;
+struct file** files;
 
 #define stack_block(type, ptr) root.blocks = array_append(root.blocks, make_block(type, ptr))
 
