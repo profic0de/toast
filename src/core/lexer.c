@@ -77,7 +77,6 @@ int parse_fd(size_t fd) {
             size_t start = POS, len = 0;
             char b = c, p = 0, po = 0;
             while (chr && !(c==b && !(p=='\\' && po!='\\')) && c!='\n') po = (len++, p), p = c;
-            // while (chr&&c==b?(po!=p&&p=='\\'):1&&c!='\n') po = (len++, p), p = c;
             bytes = strndup(buffer+start,len);
             // print("%c",*++ptr);
             if (c!=b) return (FREE, error(file->filename, start, 1, "error: string not closed"), ERROR(13));
