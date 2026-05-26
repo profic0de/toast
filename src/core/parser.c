@@ -42,6 +42,8 @@ int parse_file(size_t fd) {
             print("type: %s, token: %.*s",type_to_char(token.type),(int)token.len,token.buffer);
     }
 
+    free(buffer);
+
     // if (bytes) {
     //     tokens = array_append(tokens, strdup(*bytes));
     //     types = array_append(types, token_type);
