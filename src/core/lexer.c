@@ -1,7 +1,5 @@
 #include "kit.h"
 
-#define POS ptr-buffer
-
 struct token next_token(char* buffer, char* end) {
     static char* list = "+-/*!=%%><()[]{}&|~^;,.";
     static char operators[256];
@@ -10,9 +8,12 @@ struct token next_token(char* buffer, char* end) {
     while (*++_list) operators[(int)*_list]++;
     skip:
 
+    while (isspace(*buffer));
+
     struct token token;
     token.buffer=buffer;
     token.type=NONE;
+    token.len=0;
 
     return token;
 }
