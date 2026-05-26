@@ -76,10 +76,9 @@ int parse_fd(size_t fd) {
             token_type = STRING;
             size_t start = POS, len = 0;
             char b = c, p = 0, po = 0;
-            // str_append(&bytes, c);
             while (chr&&c==b?(po!=p&&p=='\\'):1&&c!='\n') po = (len++, p), p = c;
             bytes = strndup(buffer+start,len);
-            if (c=='\n') return (FREE, error(file->filename, start, 1, "error: string not closed"), ERROR(13));
+            if (c!=b) return (FREE, error(file->filename, start, 1, "error: string not closed"), ERROR(13));
 
         } else {
             token_type = KEYWORD;
