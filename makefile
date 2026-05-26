@@ -4,7 +4,8 @@ ARGS = -O3 -std=c23 -I. -Isrc -Wall -Wno-misleading-indentation -Wno-deprecated-
 OUT = out
 
 # Gonna use a very big file so i'll optimize the lexer
-PROGRAM_ARGS = tests/200k.t
+# PROGRAM_ARGS = tests/200k.t
+PROGRAM_ARGS = src.t
 
 run: $(OUT)
 	@echo --------------------

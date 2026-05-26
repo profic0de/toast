@@ -36,8 +36,9 @@ int parse_fd(size_t fd) {
         if (!chr) break;
         if (isspace(c)) continue;
         if (c=='#') {
-            size_t val = 0;
-            while (chr&&c!='\n') if (!(val&((size_t)0xFF<<(8*7)))) val = (val<<8)|c; else str_append(&bytes, c);
+            size_t val = 0, pos = 0, len = 0;
+            while (chr&&c!='\n') if (!(val&((size_t)0xFF<<(8*7)))) val = (val<<8)|c; else pos += (len++, (!pos)*(POS));
+            bytes = strndup(buffer+pos,len);
             if (val==((size_t)'requ'<<(8*4)|'ire ')&&((c=bytes?bytes[0]:0)=='\''||c=='"'||c=='<')) {
                 char* b = bytes+1;
                 char e = bytes[0]=='<'?'>':bytes[0];
@@ -81,7 +82,7 @@ int parse_fd(size_t fd) {
             token_type = KEYWORD;
             char p = 0;
             size_t pos = POS, val = c, len = 1;
-            str_append(&bytes, c);
+            size_t start = pos;
             while (chr) {
                 if (!(isalnum(c)||c=='.')) {
                     if (p=='.') {
@@ -91,10 +92,14 @@ int parse_fd(size_t fd) {
                 } if (p=='.'&&!isalpha(c)) return (FREE, error(file->filename, pos+1, 1, "error: invalid keyword"), ERROR(15));
                 if (c=='.') token_type = PATH;
                 if (p==c&&c=='.') return (FREE, error(file->filename, pos, 1, "error: expected a keyword"), ERROR(16));
-                str_append(&bytes, (p=c));
+                p=c;
                 pos = POS;
+                val = (val<<8)|c;
                 len++;
-            } if (token_type==KEYWORD&&len<=7) {
+            }
+            bytes = strndup(buffer+start,len);
+
+            if (token_type==KEYWORD&&len<=7) {
                 // break, if, while, else, return
                 size_t words[] = {
                     (size_t)'brea'<<(8*1)|'k',
