@@ -80,9 +80,7 @@ int parse_fd(size_t fd) {
         } else {
             token_type = KEYWORD;
             char p = 0;
-            size_t pos = POS;
-            size_t val = c;
-            size_t len = 1;
+            size_t pos = POS, val = c, len = 1;
             str_append(&bytes, c);
             while (chr) {
                 if (!(isalnum(c)||c=='.')) {
@@ -95,7 +93,6 @@ int parse_fd(size_t fd) {
                 if (p==c&&c=='.') return (FREE, error(file->filename, pos, 1, "error: expected a keyword"), ERROR(16));
                 str_append(&bytes, (p=c));
                 pos = POS;
-                val = (val<<8)|c;
                 len++;
             } if (token_type==KEYWORD&&len<=7) {
                 // break, if, while, else, return
