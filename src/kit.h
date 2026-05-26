@@ -14,16 +14,9 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-// extern size_t line, column;
-// int __getc(FILE *__stream);
-// int __ungetc(int __c, FILE *__stream);
-// #define getc(__stream) __getc(__stream)
-// #define ungetc(__c, __stream) __ungetc(__c, __stream)
-struct AST;
 extern struct file {
     char* filename;
     char** requirements;
-    struct AST* ast;
 }** files;
 
 void* auto_free(void* ptr);
@@ -33,29 +26,10 @@ void** array_append(void** arr, void* ptr);
 void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...);
 
 enum token_type {NONE,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD};
-struct AST {
-    char* name;
-
-    union {
-        struct AST** array;
-        uintptr_t value;
-        // Can be pointer to type declaration
-        void* pointer;
-    };
-
-    enum {
-        ROOT,
-
-        ARRAY,
-        VARIABLE,
-        FUNCTION,
-        OBJECT,
-        TYPE,
-
-        OPERATION,
-        VALUE,
-        SCOPE
-    } type;
+struct token {
+    enum token_type type;
+    char* buffer;
+    size_t len;
 };
 
 int parse_file(size_t fd);

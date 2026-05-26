@@ -7,16 +7,7 @@ struct file** files;
 #define ERROR(i) 100+i
 #define POS ptr-buffer
 
-int next_token(size_t fd) {
-    size_t size = lseek(fd, 0, SEEK_END);
-    lseek(fd, 0, SEEK_SET);
-
-    char* buffer = malloc(size), *ptr = buffer-1, *end = ptr+1; {
-        size_t len = read(fd, buffer, size);
-        if (0 >= len) return 2;
-        end += len;
-    }
-
+int next_token(char* buffer) {
     static char* list = "+-/*!=%%><()[]{}&|~^;,.";
     static char operators[256];
     if (operators[(int)*list]) goto skip;

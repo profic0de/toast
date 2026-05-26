@@ -23,10 +23,25 @@ char* type_to_char(enum token_type token_type) {
     return str;
 }
 
-int next_token(size_t fd);
+struct token next_token(char* buffer);
 
 int parse_file(size_t fd) {
-    // if (bytes) print("type: %s, token: %s",type_to_char(token_type),*bytes);
+    size_t size = lseek(fd, 0, SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+
+    char* buffer = malloc(size), *ptr = buffer-1, *end = ptr+1; {
+        size_t len = read(fd, buffer, size);
+        if (0 >= len) return 2;
+        end += len;
+    }
+
+    struct token token;
+
+    while ((token = next_token(buffer)).type) {
+        if (token.buffer)
+            print("type: %s, token: %.*s",type_to_char(token.type),token.len,token.buffer);
+    }
+
     // if (bytes) {
     //     tokens = array_append(tokens, strdup(*bytes));
     //     types = array_append(types, token_type);
