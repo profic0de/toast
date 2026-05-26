@@ -7,7 +7,7 @@ struct file** files;
 #define ERROR(i) 100+i
 #define POS ptr-buffer
 
-int parse_fd(size_t fd) {
+int next_token(size_t fd) {
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
@@ -151,13 +151,13 @@ int parse_fd(size_t fd) {
 int file_store(char* filename) {
     struct stat sb;
     if (stat(filename, &sb) == -1) {
-        // perror("stat");
-        return ERROR(20);
+        perror("stat");
+        return 1;
     }
 
     if (!S_ISREG(sb.st_mode)) {
-        // print("%s is not a file",filename);
-        return ERROR(21);
+        print("%s is not a file",filename);
+        return 2;
     }
 
     if (files) {
@@ -178,7 +178,7 @@ int file_store(char* filename) {
 
     files = array_append(files, file);
 
-    int r = parse_fd(fd);
+    int r = parse_file(fd);
 
     auto_free(file->requirements);
 

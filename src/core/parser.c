@@ -1,9 +1,5 @@
 #include "kit.h"
 
-char** tokens;
-enum token_type* types;
-struct AST root = {.type=ROOT, .name="root"};
-
 char* type_to_char(enum token_type token_type) {
     static char str[16];
     for (size_t i = 0; i < sizeof(str); i++) str[i] = 0;
@@ -27,7 +23,9 @@ char* type_to_char(enum token_type token_type) {
     return str;
 }
 
-char* handle_token(char** bytes, enum token_type token_type) {
+int next_token(size_t fd);
+
+int parse_file(size_t fd) {
     // if (bytes) print("type: %s, token: %s",type_to_char(token_type),*bytes);
     // if (bytes) {
     //     tokens = array_append(tokens, strdup(*bytes));
@@ -40,5 +38,5 @@ char* handle_token(char** bytes, enum token_type token_type) {
 
     // printf("declared %s, (%s)\n",tokens[i+1], tokens[i]);
 
-    return NULL;
+    return 0;
 }
