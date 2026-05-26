@@ -11,7 +11,7 @@ int parse_fd(size_t fd) {
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
-    char* buffer = malloc(size), *ptr = buffer-1, *end = ptr; {
+    char* buffer = malloc(size), *ptr = buffer-1, *end = ptr+1; {
         size_t len = read(fd, buffer, size);
         if (0 >= len) return 2;
         end += len;
@@ -78,7 +78,7 @@ int parse_fd(size_t fd) {
             char b = c, p = 0, po = 0;
             while (chr&&c==b?(po!=p&&p=='\\'):1&&c!='\n') po = (len++, p), p = c;
             bytes = strndup(buffer+start,len);
-            print("%c",c);
+            // print("%c",*++ptr);
             if (c!=b) return (FREE, error(file->filename, start, 1, "error: string not closed"), ERROR(13));
         } else {
             token_type = KEYWORD;
