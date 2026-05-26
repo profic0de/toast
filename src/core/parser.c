@@ -40,6 +40,7 @@ int parse_file(size_t fd) {
     while ((token = next_token(ptr, end)).type) {
         if (token.buffer)
             print("type: %s, token: %.*s",type_to_char(token.type),(int)token.len,token.buffer);
+        ptr = token.buffer+token.len;
     }
 
     free(buffer);
