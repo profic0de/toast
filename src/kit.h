@@ -14,12 +14,11 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-extern size_t line, column;
-void cleanup(void);
-int __getc(FILE *__stream);
-int __ungetc(int __c, FILE *__stream);
-#define getc(__stream) __getc(__stream)
-#define ungetc(__c, __stream) __ungetc(__c, __stream)
+// extern size_t line, column;
+// int __getc(FILE *__stream);
+// int __ungetc(int __c, FILE *__stream);
+// #define getc(__stream) __getc(__stream)
+// #define ungetc(__c, __stream) __ungetc(__c, __stream)
 struct AST;
 extern struct file {
     char* filename;
