@@ -66,11 +66,29 @@ int parse_fd(size_t fd) {
             bytes = strndup(buffer+start,len);
         } else if (operators[c]) {
             token_type = SYMBOL;
-            str_append(&bytes, c);
-            size_t val = c, pos = POS;
-            if (lookup(*(size_t*)"[]{}();,", c)||c=='.'||c=='~') ptr++;
-            else while (chr&&operators[c]&&!((val=(val<<8)|c)&0xFF000000UL)) str_append(&bytes, c);
-            if (val&0xFF000000UL) return (FREE, error(file->filename, pos, 3, "error: invalid symbol"), ERROR(12));
+
+            size_t start = POS;
+            size_t pos = POS;
+
+            size_t val = c;
+            size_t len = 1;
+
+            if (lookup(*(size_t*)"[]{}();,", c) || c=='.' || c=='~') {
+                ptr++;
+            } else {
+                while (chr && operators[c] && !((val = (val << 8) | c) & 0xFF000000UL)) {
+                    len++;
+                }
+            }
+
+            if (val & 0xFF000000UL)
+                return (
+                    FREE,
+                    error(file->filename, pos, 3, "error: invalid symbol"),
+                    ERROR(12)
+                );
+
+            bytes = strndup(buffer + start, len);
             ptr--;
         } else if (c=='\''||c=='"') {
             token_type = STRING;
