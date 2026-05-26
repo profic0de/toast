@@ -117,3 +117,28 @@ void error_message(const char* filename, size_t s_line, size_t s_column, size_t 
     
     fclose(fd);
 }
+
+void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...) {
+    // Walk the file to convert byte offset -> line + column
+    FILE* fd = fopen(filename, "r");
+    size_t s_line = 0, s_column = 1;
+    if (fd) {
+        size_t offset = 0;
+        int c;
+        while ((c = fgetc(fd)) != EOF && offset < pos) {
+            if (c == '\n') { s_line++; s_column = 1; }
+            else            { s_column++; }
+            offset++;
+        }
+        fclose(fd);
+    }
+
+    // Forward to error_message with the resolved line/column
+    char buf[1024];
+    va_list args;
+    va_start(args, fmt);
+    vsnprintf(buf, sizeof(buf), fmt, args);
+    va_end(args);
+
+    error_message(filename, s_line, s_column, token_len, "%s", buf);
+}

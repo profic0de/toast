@@ -31,6 +31,7 @@ void* auto_free(void* ptr);
 void str_append(char** str, char c);
 int dict_append(char*** arr, char* ptr);
 void** array_append(void** arr, void* ptr);
+void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...);
 void error_message(const char* filename, size_t s_line, size_t s_column, size_t token_len, const char* fmt, ...);
 
 enum token_type {NONE,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD};
