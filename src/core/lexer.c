@@ -30,7 +30,7 @@ int parse_fd(size_t fd) {
 
     int c = 0;
     char* bytes = NULL;
-    while (c!=EOF) {
+    while (ptr!=end) {
         enum token_type token_type = NONE;
 
         if (!chr) break;
@@ -54,15 +54,16 @@ int parse_fd(size_t fd) {
 
         if (isdigit(c)) {
             token_type = NUMBER;
-            str_append(&bytes, c);
+            size_t start = POS, len = 1;
             while (chr) {
                 size_t pos = POS;
-                if (isspace(c)||(operators[c]&&c!='.')) break;
+                if (isspace(c)||(operators[c]&&c!='.')) {ptr--;break;}
                 else if (isalpha(c)) return (FREE,error(file->filename, pos, 1, "error: a number can't contain letters"), ERROR(10));
                 else if (c=='.'&&token_type==NUMBER) token_type = FLOAT;
                 else if (c=='.') return (FREE,error(file->filename, pos, 1, "error: a number can only have one dot"), ERROR(11));
-                str_append(&bytes, c);
+                len++;
             }
+            bytes = strndup(buffer+start,len);
         } else if (operators[c]) {
             token_type = SYMBOL;
             str_append(&bytes, c);
@@ -73,11 +74,13 @@ int parse_fd(size_t fd) {
             ptr--;
         } else if (c=='\''||c=='"') {
             token_type = STRING;
-            size_t pos = POS;
+            size_t start = POS, len = 0;
             char b = c, p = 0, po = 0;
-            str_append(&bytes, c);
-            while (chr&&c==b?(po!=p&&p=='\\'):1&&c!='\n') po = (str_append(&bytes, c), p), p = c;
-            if (c=='\n') return (FREE, error(file->filename, pos, 1, "error: string not closed"), ERROR(13));
+            // str_append(&bytes, c);
+            while (chr&&c==b?(po!=p&&p=='\\'):1&&c!='\n') po = (len++, p), p = c;
+            bytes = strndup(buffer+start,len);
+            if (c=='\n') return (FREE, error(file->filename, start, 1, "error: string not closed"), ERROR(13));
+
         } else {
             token_type = KEYWORD;
             char p = 0;
