@@ -1,14 +1,7 @@
 #include "kit.h"
 
 struct token next_token(char* buffer, char* end) {
-    static char* list = "+-/*!=%%><()[]{}&|~^;,.";
-    static char operators[256];
-    if (operators[(int)*list]) goto skip;
-    char* _list = list-1;
-    while (*++_list) operators[(int)*_list]++;
-    skip:
-
-    while (isspace(*buffer));
+    while (is_space(*buffer));
 
     struct token token;
     token.buffer=buffer;
