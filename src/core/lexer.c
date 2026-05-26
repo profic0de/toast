@@ -10,7 +10,6 @@ struct token next_token(char* buffer, char* end) {
     while (*++_list) operators[(int)*_list]++;
     skip:
 
-
     struct token token;
     token.buffer=buffer;
     token.type=NONE;
