@@ -11,6 +11,8 @@ void* auto_free(void* ptr) {
 
 __attribute__((destructor))
 void cleanup() {
+    free(files);
+
     if (!pointers) return;
     void** temp = pointers;
     while (*temp) free(*temp++);

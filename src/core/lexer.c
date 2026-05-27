@@ -11,8 +11,3 @@ struct token next_token(char* buffer, char* end) {
 
     return token;
 }
-
-__attribute__((destructor))
-static void clean() {
-    free(files);
-}
