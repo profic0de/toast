@@ -32,7 +32,7 @@ int parse_file(size_t fd) {
 
     char* buffer = malloc(size+1), *ptr = buffer, *end = ptr; {
         size_t len = read(fd, buffer, size);
-        if (0 >= len) return 1;
+        if (size != len) return (free(buffer),1);
         end += len;
     } buffer[size] = 0;
 
