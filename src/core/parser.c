@@ -30,11 +30,11 @@ int parse_file(size_t fd) {
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
-    char* buffer = malloc(size), *ptr = buffer, *end = ptr; {
+    char* buffer = malloc(size+1), *ptr = buffer, *end = ptr; {
         size_t len = read(fd, buffer, size);
         if (0 >= len) return 1;
         end += len;
-    }
+    } buffer[size] = 0;
 
     struct token token;
 
