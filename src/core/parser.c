@@ -7,7 +7,7 @@ char* type_to_char(enum token_type token_type) {
     switch (token_type) {
     #define case_macro(val) case val: return (strcpy(str, #val), str);
 
-    case_macro(NONE);
+    case_macro(EOF);
     case_macro(NUMBER);
     case_macro(FLOAT);
     case_macro(KEYWORD);

@@ -25,7 +25,8 @@ int dict_append(char*** arr, char* ptr);
 void** array_append(void** arr, void* ptr);
 void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...);
 
-enum token_type {NONE,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,REQ};
+#undef EOF
+enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,REQ};
 struct token {
     enum token_type type;
     char* buffer;
