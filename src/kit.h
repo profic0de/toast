@@ -16,8 +16,13 @@
 
 extern struct file {
     char* filename;
-    char** requirements;
 }** files;
+
+struct folder {
+    char* name;
+    struct file* files;
+    struct folder* folders;
+};
 
 void* auto_free(void* ptr);
 void str_append(char** str, char c);
