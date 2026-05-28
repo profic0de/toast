@@ -26,7 +26,6 @@ char* type_to_char(enum token_type token_type) {
 struct token next_token(char* buffer, char* end);
 
 int parse_file(size_t fd) {
-    print("test");
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 

@@ -33,6 +33,7 @@ struct token {
     size_t len;
 };
 
+#define uint(s) (__extension__ ({ uint64_t _v; __builtin_memcpy(&_v, s, 8); _v; }))
 #define lookup(size_t, c) (((0x0101010101010101*c ^ size_t) - 0x0101010101010101) & ~(0x0101010101010101*c ^ size_t) & 0x8080808080808080)
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
