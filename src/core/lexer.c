@@ -6,10 +6,10 @@ struct token next_token(char* buffer, char* end) {
     if (buffer==end) return (struct token){.buffer=buffer,.type=EOF,.len=0};
     uint8_t c = *buffer++;
 
-    if (c=='#') {if (end-buffer<8) while (*buffer&&*buffer++!='\n'); else {
+    if (c=='#') {if (end-buffer<8) {while (*buffer&&*buffer++!='\n'); return next_token(buffer,end);} else {
         uint64_t val; memcpy(&val, buffer, 8);
         if (val==uint("require ")) print("pass");
-        else while (*buffer&&*buffer++!='\n');
+        else {while (*buffer&&*buffer++!='\n'); return next_token(buffer,end);}
     }} if (is_single(c)) return (struct token){.type=SYMBOL,.buffer=buffer,.len=1};
 
     struct token token;
