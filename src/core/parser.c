@@ -15,6 +15,7 @@ char* type_to_char(enum token_type token_type) {
     case_macro(STRING);
     case_macro(PATH);
     case_macro(WORD);
+    case_macro(REQ);
 
     #undef case_macro
     default:
