@@ -38,10 +38,11 @@ int parse_file(size_t fd) {
 
     struct token token;
 
-    while ((token = next_token(ptr, end)).type) {
+    while ((token = next_token(ptr, end)).type!=EOF) {
+        ptr = token.buffer+token.len;
+        if (token.type==SKIP) continue;
         if (token.buffer)
             print("type: %s, token: %.*s",type_to_char(token.type),(int)token.len,token.buffer);
-        ptr = token.buffer+token.len;
     }
 
     free(buffer);

@@ -26,11 +26,11 @@ void** array_append(void** arr, void* ptr);
 void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...);
 
 #undef EOF
-enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,REQ};
+enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,REQ,SKIP};
 struct token {
     enum token_type type;
     char* buffer;
-    size_t len;
+    uint64_t len;
 };
 
 #define uint(s) (__extension__ ({ uint64_t _v; __builtin_memcpy(&_v, s, 8); _v; }))
