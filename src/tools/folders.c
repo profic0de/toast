@@ -7,7 +7,11 @@ int load_file(char* filename, struct folder* project) {
     if (stat(filename, &sb) == -1) return 1;
     if (!S_ISREG(sb.st_mode)) return 2; // Not a file
 
-    char* path[] = {""};
+    char** path; //null terminated
+
+    while (*filename) {
+        
+    }
 
     if (files) {
         struct file** temp = files-1;
@@ -33,36 +37,6 @@ int load_file(char* filename, struct folder* project) {
 }
 
 int new_project(char* entry_file, struct folder* project) {
-    struct stat sb;
-    if (stat(entry_file, &sb) == -1) {
-        perror("stat");
-        return 1;
-    }
-
-    if (!S_ISREG(sb.st_mode)) {
-        print("%s is not a file",entry_file);
-        return 2;
-    }
-
-    if (files) {
-        struct file** temp = files-1;
-        while (*++temp&&strcmp(temp[0]->filename,entry_file));
-        if (*temp) return 0;
-    }
-
-    size_t fd = open(entry_file, O_RDONLY);
-    if (!fd) {
-        print("failed to open %s",entry_file);
-        return 3;
-    }
-
-    struct file* file = auto_free(malloc(sizeof(struct file)));
-    file->filename = auto_free(strdup(entry_file));
-
-    files = array_append(files, file);
-
-    int r = parse_file(fd);
-
-    close(fd);
+    int r = load_file(entry_file, project);
     return r;
 }
