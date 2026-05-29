@@ -14,14 +14,22 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-extern struct file {
+struct file {
     char* filename;
-}** files;
+};
 
 struct folder {
     char* name;
     struct file* files;
     struct folder* folders;
+};
+
+struct project {
+    struct file* main_file;
+
+    struct folder* stack[256];
+    uint8_t stack_pointer;
+    struct folder* src;
 };
 
 void* auto_free(void* ptr);

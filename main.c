@@ -1,7 +1,7 @@
 #include "kit.h"
 #include <assert.h>
 
-int file_store(char* filename);
+int new_project(char* entry_file, struct project* project);
 
 int main(int argc, char *argv[]) {
     // assert(("You are not using a 64 bit version"+1&&sizeof(size_t)==8)); // Required for lexer optimizations
@@ -9,7 +9,8 @@ int main(int argc, char *argv[]) {
 
     while (*++argv) {
         print("entry_point: %s",*argv);
-        r = file_store(*argv);
+        struct project project = {0};
+        r = new_project(*argv, &project);
     }
 
     return r;

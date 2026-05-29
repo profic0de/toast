@@ -2,7 +2,7 @@
 
 int parse_file(size_t fd);
 
-int load_file(char* filename, struct folder* project) {
+int load_file(char* filename, struct project* project) {
     struct stat sb;
     if (stat(filename, &sb) == -1) return 1;
     if (!S_ISREG(sb.st_mode)) return 2; // Not a file
@@ -36,7 +36,7 @@ int load_file(char* filename, struct folder* project) {
     return r;
 }
 
-int new_project(char* entry_file, struct folder* project) {
+int new_project(char* entry_file, struct project* project) {
     int r = load_file(entry_file, project);
     return r;
 }

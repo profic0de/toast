@@ -1,7 +1,7 @@
 #include "kit.h"
 
 int main() {
-    char* var = "adsda";
+    char* var = "test";
 
     printf("%.*s\n", 2, var);
 
