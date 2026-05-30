@@ -16,10 +16,13 @@
 
 struct file {
     char* filename;
+    uint8_t name_len;
 };
 
 struct folder {
     char* name;
+    uint8_t name_len;
+
     struct file* files;
     struct folder* folders;
     struct folder* parent;
