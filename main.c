@@ -10,10 +10,10 @@ int main(int argc, char *argv[]) {
     const char* cwd = getcwd(NULL, 0);
 
     while (*++argv) {
-        chdir(cwd);
         print("entry_point: %s",*argv);
         struct project project = {0};
         r = new_project(*argv, &project);
+        chdir(cwd);
     }
 
     return r;
