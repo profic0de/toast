@@ -2,7 +2,8 @@
 
 int parse_file(size_t fd);
 
-int navigate_path(char* path, struct project* project);
+
+int cd(char* path, struct project* project);
 
 int load_file(char* filename, struct project* project) {
     struct stat sb;

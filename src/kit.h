@@ -22,13 +22,13 @@ struct folder {
     char* name;
     struct file* files;
     struct folder* folders;
+    struct folder* parent;
 };
 
 struct project {
     struct file* main_file;
 
-    struct folder* stack[256];
-    uint8_t stack_pointer;
+    struct folder* cwd;
     struct folder* src;
 };
 
