@@ -24,9 +24,9 @@ char* type_to_char(enum token_type token_type) {
     return str;
 }
 
-struct token next_token(char* buffer, char* end);
+struct token next_token(char* buffer, char* end, struct project* project);
 
-int parse_file(size_t fd) {
+int parse_file(size_t fd, struct project* project) {
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
@@ -38,7 +38,7 @@ int parse_file(size_t fd) {
 
     struct token token;
 
-    while ((token = next_token(ptr, end)).type!=EOF) {
+    while ((token = next_token(ptr, end, project)).type!=EOF) {
         ptr = token.buffer+token.len;
         if (token.type==SKIP) continue;
         if (token.buffer)

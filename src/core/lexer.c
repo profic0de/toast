@@ -1,7 +1,7 @@
 #include "tools/ctype.h"
 #include "kit.h"
 
-struct token next_token(char* buffer, char* end) {
+struct token next_token(char* buffer, char* end, struct project* project) {
 again:
     while (is_space((unsigned char)*buffer)) buffer++;
     if (buffer==end) return (struct token){.buffer=buffer,.type=EOF,.len=0};
@@ -11,11 +11,16 @@ again:
         uint64_t val; memcpy(&val, buffer, 8);
         if (val==uint("require ")) { buffer += 8;
             if (*buffer!='\''&&*buffer!='"'&&*buffer!='<') {while (*buffer&&*buffer++!='\n'); goto again;}
-            char end = *buffer=='<'?'>':*buffer, *start = buffer++;
+            char end = *buffer=='<'?'>':*buffer, *start = ++buffer;
             while ((*++buffer)!=end);
-            size_t len = buffer-start+1;
+            size_t len = buffer-start;
             while (*buffer&&*buffer++!='\n');
-            print("require: %.*s", (int)len, start);
+            char path[len+1]; path[len] = '\0';
+            memcpy(path, start, len);
+
+            int load_file(char* filename, struct project* project);
+            load_file(path, project);
+
             return (struct token){.type=SKIP,.buffer=start,.len=(uint64_t)(buffer-start)};
         } else {while (*buffer&&*buffer++!='\n'); goto again;}
     }} if (is_single(c)) return (struct token){.type=SYMBOL,.buffer=buffer-1,.len=1};

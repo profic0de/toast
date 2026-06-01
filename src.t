@@ -1,5 +1,5 @@
 #require <test>
-#require "stdio"
+#require <stdio>
 
 int g = 0;
 
