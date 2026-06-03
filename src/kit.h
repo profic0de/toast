@@ -13,26 +13,23 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include "tools/hashmap/hashmap.h"
+
+typedef struct string {
+    char* text;
+    uint16_t len;
+} string;
 
 struct file {
-    char* filename;
-    uint8_t name_len;
-};
-
-struct folder {
-    char* name;
-    uint8_t name_len;
-
-    struct file** files;
-    struct folder** folders;
-    struct folder* parent;
+    string name;
+    string path;
 };
 
 struct project {
     struct file* main_file;
 
-    struct folder* cwd;
-    struct folder* src;
+    char** paths;
+    struct hashmap* files;
 };
 
 void* auto_free(void* ptr);
