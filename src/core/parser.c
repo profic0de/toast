@@ -27,6 +27,7 @@ char* type_to_char(enum token_type token_type) {
 struct token next_token(char* buffer, char* end, struct project* project);
 
 int parse_file(size_t fd, struct project* project) {
+    struct file* file = project->lf;
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
@@ -38,7 +39,9 @@ int parse_file(size_t fd, struct project* project) {
 
     struct token token;
 
-    while ((token = next_token(ptr, end, project)).type!=EOF) {
+    int r = 0;
+
+    while ((token = next_token(ptr, end, project)).type!=EOF&&!r) {
         ptr = token.buffer+token.len;
         if (token.type==REQ) {
             int load_file(string filepath, struct project* project);
@@ -48,7 +51,9 @@ int parse_file(size_t fd, struct project* project) {
             uint64_t len = ptr-start;
             while (*ptr&&*ptr++!='\n');
 
-            int r = load_file((string){.text=start,.len=len}, project);
+            if ((r=load_file((string){.text=start,.len=len}, project)))
+                error(file->path.text, start-buffer, len, "error: invalid path");
+
         } else if (token.buffer)
             print("type: %s, token: %.*s",type_to_char(token.type),(int)token.len,token.buffer);
     }

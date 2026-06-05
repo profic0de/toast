@@ -32,6 +32,7 @@ struct project {
 
     char** paths;
     struct hashmap* files;
+    struct file* lf; // last file
 };
 
 void* auto_free(void* ptr);
