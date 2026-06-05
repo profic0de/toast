@@ -40,8 +40,16 @@ int parse_file(size_t fd, struct project* project) {
 
     while ((token = next_token(ptr, end, project)).type!=EOF) {
         ptr = token.buffer+token.len;
-        if (token.type==SKIP) continue;
-        if (token.buffer)
+        if (token.type==REQ) {
+            int load_file(string filepath, struct project* project);
+
+            char end = *ptr=='<'?'>':*ptr, *start = ++ptr;
+            while ((*++ptr)!=end&&(*ptr)!='\n');
+            uint64_t len = ptr-start;
+            while (*ptr&&*ptr++!='\n');
+
+            int r = load_file((string){.text=start,.len=len}, project);
+        } else if (token.buffer)
             print("type: %s, token: %.*s",type_to_char(token.type),(int)token.len,token.buffer);
     }
 

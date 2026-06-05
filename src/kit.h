@@ -15,6 +15,8 @@
 #include <stdint.h>
 #include "tools/hashmap/hashmap.h"
 
+#define byte uint8_t
+
 typedef struct string {
     char* text;
     uint16_t len;
