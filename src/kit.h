@@ -16,6 +16,7 @@
 #include "tools/hashmap/hashmap.h"
 
 #define byte uint8_t
+extern char str_box[UINT16_MAX+1];
 
 typedef struct string {
     char* text;
@@ -30,7 +31,8 @@ struct file {
 struct project {
     struct file* main_file;
 
-    char** paths;
+    char** src_paths;
+    char** lib_paths;
     struct hashmap* files;
     struct file* lf; // last file
 };

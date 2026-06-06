@@ -1,6 +1,7 @@
 #include "kit.h"
 #include <assert.h>
 
+char str_box[UINT16_MAX+1];
 int new_project(char* entry_file, struct project* project);
 
 int main(int argc, char *argv[]) {
