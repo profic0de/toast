@@ -11,8 +11,8 @@ int load_file(string filepath, struct project* project) {
 
     int len = str_box+1+filepath.len-filename;
     byte shift = 0; if (str_box[filepath.len]!='/') shift++;
-    char full_path[filepath.len+shift+4+len]; memset(full_path, 0, filepath.len+shift+4+len);
-    memcpy(full_path+1, filepath.text, filepath.len);
+    memset(str_box, 0, filepath.len+shift+4+len);
+    memcpy(str_box+1, filepath.text, filepath.len);
 
     byte ret = 1;
 
@@ -22,34 +22,34 @@ int load_file(string filepath, struct project* project) {
     if (!S_ISREG(sb.st_mode)&&ret++) {
         if (!S_ISDIR(sb.st_mode)) return ret; // Package not found
 
-        full_path[filepath.len+shift] = '/';
-        memcpy(full_path+filepath.len+shift+1, filename, len);
-        memcpy(full_path+filepath.len+shift+1+len, ".t", 2);
+        str_box[filepath.len+shift] = '/';
+        memcpy(str_box+filepath.len+shift+1, filename, len);
+        memcpy(str_box+filepath.len+shift+1+len, ".t", 2);
     }
 
     struct file* file = (struct file*)hashmap_get(project->files, &(struct file){
-        .path={.text=full_path+1, .len=(len=strlen(full_path+1))}
+        .path={.text=str_box+1, .len=(len=strlen(str_box+1))}
     });
     if (file) return 0;
-    if (ret==2) print("package: [%s]",full_path+1);
-    else print("file: [%s]",full_path+1);
+    if (ret==2) print("package: [%s]",str_box+1);
+    else print("file: [%s]",str_box+1);
 
-    if (stat(full_path+1, &sb) == -1) return ret;
+    if (stat(str_box+1, &sb) == -1) return ret;
     if (!S_ISREG(sb.st_mode)) return ret;
 
-    int fd = open(full_path+1, O_RDONLY);
+    int fd = open(str_box+1, O_RDONLY);
     if (fd==-1) {
-        print("failed to open %s",full_path+1);
+        print("failed to open %s",str_box+1);
         return 3;
     }
 
     hashmap_set(project->files, &(struct file){
         .name={.text=auto_free(strndup(filename,len)), .len=len},
-        .path={.text=auto_free(strndup(full_path+1, len)), .len=len}
+        .path={.text=auto_free(strndup(str_box+1, len)), .len=len}
     });
 
     file = (struct file*)hashmap_get(project->files, &(struct file){
-        .path={.text=full_path+1, .len=len}
+        .path={.text=str_box+1, .len=len}
     });
 
     if (!file) return ret;
