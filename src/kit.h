@@ -1,10 +1,11 @@
 #ifndef KIT_H
 #define KIT_H
-
+#define _GNU_SOURCE
 // open, read, etc
 #include <fcntl.h>
 #include <unistd.h>
-// #include <stdio.h>
+#include <limits.h>
+#include <stdio.h>
 
 #include <ctype.h>
 #include <stdlib.h>
@@ -13,11 +14,11 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "tools/hashmap/hashmap.h"
 
 #define byte uint8_t
 extern char str_box[UINT16_MAX+1];
-extern char* cwd; extern size_t cwdl;
 
 typedef struct string {
     char* text;

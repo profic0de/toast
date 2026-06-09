@@ -6,13 +6,18 @@ int load_file(string filepath, struct project* project) {
     memset(str_box, 0, filepath.len+2);
     memcpy(str_box+1, filepath.text, filepath.len);
 
-    char* filename = str_box+filepath.len;
-    while (*--filename&&*filename!='/'); filename++;
+    if (!realpath(str_box+1, str_box+1)) return 1;
 
-    int len = str_box+1+filepath.len-filename;
-    byte shift = 0; if (str_box[filepath.len]!='/') shift++;
-    memset(str_box, 0, filepath.len+shift+4+len);
-    memcpy(str_box+1, filepath.text, filepath.len);
+    int len = strlen(str_box+1);
+    char* filename = str_box+len+1;
+    while (*--filename&&*filename!='/'); filename++;
+    int fl = str_box+len-filename;
+
+    // print("%s:%d",filename,fl);
+
+    byte shift = 0; if (str_box[len]!='/') shift++;
+    // memset(str_box, 0, len+shift+4+len);
+    // memcpy(str_box+1, filepath.text, len);
 
     byte ret = 1;
 
@@ -22,9 +27,9 @@ int load_file(string filepath, struct project* project) {
     if (!S_ISREG(sb.st_mode)&&ret++) {
         if (!S_ISDIR(sb.st_mode)) return ret; // Package not found
 
-        str_box[filepath.len+shift] = '/';
-        memcpy(str_box+filepath.len+shift+1, filename, len);
-        memcpy(str_box+filepath.len+shift+1+len, ".t", 2);
+        str_box[len+shift] = '/';
+        memcpy(str_box+len+shift+1, filename, fl+1);
+        memcpy(str_box+len+shift+2+fl, ".t", 2);
     }
 
     struct file* file = (struct file*)hashmap_get(project->files, &(struct file){
