@@ -1,4 +1,4 @@
-# #require <test>
+#require <test>
 #require <stdio>
 
 int g = 0;

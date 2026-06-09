@@ -3,21 +3,21 @@
 int parse_file(size_t fd, struct project* project);
 
 int load_file(string filepath, struct project* project) {
-    char path[filepath.len+2]; memset(path, 0, filepath.len+2);
-    memcpy(path+1, filepath.text, filepath.len);
+    memset(str_box, 0, filepath.len+2);
+    memcpy(str_box+1, filepath.text, filepath.len);
 
-    char* filename = path+filepath.len;
+    char* filename = str_box+filepath.len;
     while (*--filename&&*filename!='/'); filename++;
 
-    int len = path+1+filepath.len-filename;
-    byte shift = 0; if (path[filepath.len]!='/') shift++;
+    int len = str_box+1+filepath.len-filename;
+    byte shift = 0; if (str_box[filepath.len]!='/') shift++;
     char full_path[filepath.len+shift+4+len]; memset(full_path, 0, filepath.len+shift+4+len);
     memcpy(full_path+1, filepath.text, filepath.len);
 
     byte ret = 1;
 
     struct stat sb;
-    if (stat(path+1, &sb) == -1) return 1;
+    if (stat(str_box+1, &sb) == -1) return 1;
 
     if (!S_ISREG(sb.st_mode)&&ret++) {
         if (!S_ISDIR(sb.st_mode)) return ret; // Package not found
