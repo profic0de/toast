@@ -17,6 +17,7 @@
 
 #define byte uint8_t
 extern char str_box[UINT16_MAX+1];
+extern char* cwd; extern size_t cwdl;
 
 typedef struct string {
     char* text;
