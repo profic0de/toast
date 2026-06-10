@@ -11,7 +11,7 @@ int load_file(string filepath, struct project* project) {
     int len = strlen(str_box+1);
     char* filename = str_box+len+1;
     while (*--filename&&*filename!='/'); filename++;
-    int fl = str_box+len-filename;
+    int fl = str_box+len-filename+1;
 
     // print("%s:%d",filename,fl);
 
@@ -28,12 +28,12 @@ int load_file(string filepath, struct project* project) {
         if (!S_ISDIR(sb.st_mode)) return ret; // Package not found
 
         str_box[len+shift] = '/';
-        memcpy(str_box+len+shift+1, filename, fl+1);
-        memcpy(str_box+len+shift+2+fl, ".t", 2);
+        memcpy(str_box+len+shift+1, filename, fl);
+        memcpy(str_box+len+shift+1+fl, ".t", 2);
     }
 
     struct file* file = (struct file*)hashmap_get(project->files, &(struct file){
-        .path={.text=str_box+1, .len=(len=strlen(str_box+1))}
+        .path={.text=str_box+1, .len=(len=strlen(str_box+1))},
     });
     if (file) return 0;
     if (ret==2) print("package: [%s]",str_box+1);
@@ -48,9 +48,17 @@ int load_file(string filepath, struct project* project) {
         return 3;
     }
 
+    char* text = auto_free(strndup(str_box+1, len));
+    if (!text) return 4;
+
+    if (ret==2) fl+=2;
+
+    // value(fl);
+    // value((char*)(text+len-fl));
+
     hashmap_set(project->files, &(struct file){
-        .name={.text=auto_free(strndup(filename,len)), .len=len},
-        .path={.text=auto_free(strndup(str_box+1, len)), .len=len}
+        .path={.text=text, .len=len},
+        .name={.text=text+len-fl, .len=fl}
     });
 
     file = (struct file*)hashmap_get(project->files, &(struct file){
