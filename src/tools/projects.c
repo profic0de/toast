@@ -30,6 +30,7 @@ int load_file(string filepath, struct project* project) {
         str_box[len+shift] = '/';
         memcpy(str_box+len+shift+1, filename, fl);
         memcpy(str_box+len+shift+1+fl, ".t", 2);
+        fl+=2;
     }
 
     struct file* file = (struct file*)hashmap_get(project->files, &(struct file){
@@ -45,13 +46,11 @@ int load_file(string filepath, struct project* project) {
     int fd = open(str_box+1, O_RDONLY);
     if (fd==-1) {
         print("failed to open %s",str_box+1);
-        return 3;
+        return -1;
     }
 
     char* text = auto_free(strndup(str_box+1, len));
-    if (!text) return 4;
-
-    if (ret==2) fl+=2;
+    if (!text) return -2;
 
     // value(fl);
     // value((char*)(text+len-fl));

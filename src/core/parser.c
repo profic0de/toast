@@ -49,6 +49,7 @@ int parse_file(size_t fd, struct project* project) {
             char end = *ptr=='<'?'>':*ptr, *start = ++ptr;
             while ((*++ptr)!=end&&(*ptr)!='\n');
             uint64_t len = ptr-start;
+            if (*ptr=='\n') continue;
             while (*ptr&&*ptr++!='\n');
 
             if ((r=load_file((string){.text=start,.len=len}, project)))
