@@ -41,7 +41,7 @@ int parse_file(size_t fd, struct project* project) {
 
     int r = 0;
 
-    while ((token = next_token(ptr, end, project)).type!=EOF&&!r) {
+    while ((project->lf=file)&&(token = next_token(ptr, end, project)).type!=EOF&&!r) {
         ptr = token.buffer+token.len;
         if (token.type==REQ) {
             int load_file(string filepath, struct project* project);
@@ -51,6 +51,17 @@ int parse_file(size_t fd, struct project* project) {
             uint64_t len = ptr-start;
             if (*ptr=='\n') continue;
             while (*ptr&&*ptr++!='\n');
+
+            // value(*(start-1));
+            if (*(start-1)=='<') { if (project->lib_paths) {
+                for (size_t i = 0; project->lib_paths[i] ; i++) {
+                    //TODO: Finish this loop
+                }
+            }} else if (project->src_paths) {
+                for (size_t i = 0; project->src_paths[i] ; i++) {
+                    //TODO: This one too
+                }
+            }
 
             if ((r=load_file((string){.text=start,.len=len}, project)))
                 error(file->path.text, start-buffer, len, "error: invalid path");

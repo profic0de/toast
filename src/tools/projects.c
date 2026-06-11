@@ -37,8 +37,9 @@ int load_file(string filepath, struct project* project) {
         .path={.text=str_box+1, .len=(len=strlen(str_box+1))},
     });
     if (file) return 0;
-    if (ret==2) print("package: [%s]",str_box+1);
-    else print("file: [%s]",str_box+1);
+
+    // if (ret==2) print("package: [%s]",str_box+1);
+    // else print("file: [%s]",str_box+1);
 
     if (stat(str_box+1, &sb) == -1) return ret;
     if (!S_ISREG(sb.st_mode)) return ret;

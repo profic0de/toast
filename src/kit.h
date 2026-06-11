@@ -46,17 +46,18 @@ void** array_append(void** arr, void* ptr);
 void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...);
 
 #undef EOF
-enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,REQ,SKIP};
+enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,REQ,SKIP,ERR};
 struct token {
     enum token_type type;
     char* buffer;
     uint64_t len;
 };
 
-#define uint(s) (__extension__ ({ uint64_t _v; __builtin_memcpy(&_v, s, 8); _v; }))
+#define uint8(s) (__extension__ ({ uint64_t _v; __builtin_memcpy(&_v, s, 8); _v; }))
 #define lookup(size_t, c) (((0x0101010101010101*c ^ size_t) - 0x0101010101010101) & ~(0x0101010101010101*c ^ size_t) & 0x8080808080808080)
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
-#define value(x) printf(_Generic((x), int: "[%s:%d] %s: %d\n", unsigned: "[%s:%d] %s: %u\n", long: "[%s:%d] %s: %ld\n", unsigned long: "[%s:%d] %s: %lu\n", long long: "[%s:%d] %s: %lld\n", unsigned long long: "[%s:%d] %s: %llu\n", float: "[%s:%d] %s: %f\n", double: "[%s:%d] %s: %lf\n", char*: "[%s:%d] %s: %s\n", const char*: "[%s:%d] %s: %s\n", default: "[%s:%d] %s: %p\n"), __FILE__, __LINE__, #x, (x))
+#define value(x) printf(_Generic((x), int: "[%s:%d] %s: %d\n", char: "[%s:%d] %s: %c\n", unsigned: "[%s:%d] %s: %u\n", long: "[%s:%d] %s: %ld\n", unsigned long: "[%s:%d] %s: %lu\n", long long: "[%s:%d] %s: %lld\n", unsigned long long: "[%s:%d] %s: %llu\n", float: "[%s:%d] %s: %f\n", double: "[%s:%d] %s: %lf\n", char*: "[%s:%d] %s: %s\n", const char*: "[%s:%d] %s: %s\n", default: "[%s:%d] %s: %p\n"), __FILE__, __LINE__, #x, (x))
+#define min(a, b) ((a) > (b) ? (b) : (a))
 
 #endif

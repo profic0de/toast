@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
     int r = 0;
 
     while (*++argv) {
-        print("entry_point: %s",*argv);
+        // print("entry_point: %s",*argv);
         struct project project = {0};
         r = new_project(*argv, &project);
         hashmap_free(project.files);
