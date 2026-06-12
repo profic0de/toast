@@ -95,7 +95,7 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
         *buffer = token.start;
         uint8_t* buf = (uint8_t*)*buffer;
 
-        while (is_digit)
+        while (is_digit(*buf))
         break;
     }
 
