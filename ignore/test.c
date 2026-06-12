@@ -1,25 +1,27 @@
-#include "kit.h"
-#include "tools/ctype.h"
-char str_box[UINT16_MAX+1];
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
+
+#define uint4(s) (__extension__ ({ uint32_t _v; __builtin_memcpy(&_v, s"\0\0\0\0", 4); _v; }))
+uint32_t are_operators[256];
+
+__attribute__((constructor))
+static void types() {
+    uint8_t i = 0;
+    uint8_t _are_operators[] = {
+        uint4("+"), uint4("-"), uint4("*"), uint4("/"), uint4("%"),
+        uint4("++"), uint4("--"), uint4("="), uint4("+="), uint4("-="),
+        uint4("*="), uint4("/="), uint4("%="), uint4("=="), uint4("!="),
+        uint4("<"), uint4("<="), uint4(">"), uint4(">="), uint4("&&"),
+        uint4("||"), uint4("&"), uint4("|"), uint4("^"), uint4("~"),
+        uint4("&="), uint4("|="), uint4("^="), uint4("<<"), uint4(">>"),
+        uint4("<<="), uint4(">>="), 0
+    }; 
+    while (_are_operators[i]) {are_operators[i] = _are_operators[i]; i++;};
+}
 
 int main() {
-    char* buffer = "<=a>";
-    char* end = buffer+strlen(buffer);
-
-    uint8_t c = *buffer++;
-    uint8_t i = 0;
-    uint8_t buf[5] = {0};
-
-    if (is_operator(c)) {
-        memcpy(buf, buffer-1, min(sizeof(buf)-1, end-(buffer-1)));
-        i=0; while (++i) if (!is_operator(buf[i])) {
-            memset(buf+i, 0, end-(buffer+i-1));
-            break;
-        }
-    }
-
-    value((char*)buf);
-    value(end-(buffer+i-1));
+    printf("%x\n",*are_operators);
 
     return 0;
 }

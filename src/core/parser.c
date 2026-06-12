@@ -15,7 +15,7 @@ char* type_to_char(enum token_type token_type) {
     case_macro(STRING);
     case_macro(PATH);
     case_macro(WORD);
-    case_macro(REQ);
+    case_macro(OPERATOR)
 
     #undef case_macro
     default:
@@ -24,7 +24,7 @@ char* type_to_char(enum token_type token_type) {
     return str;
 }
 
-struct token next_token(char* buffer, char* end, struct project* project);
+struct token next_token(char** buffer, char* start, char* end, struct project* project);
 
 int parse_file(size_t fd, struct project* project) {
     struct file* file = project->lf;
@@ -44,10 +44,10 @@ int parse_file(size_t fd, struct project* project) {
 
     while (!r) {
         project->lf=file;
-        if ((token = next_token(ptr, end, project)).type==EOF) break;
+        if ((token = next_token(&ptr, buffer, end, project)).type==EOF) break;
         // ptr = token.start;
         // if (token.start)
-        print("type: %s",type_to_char(token.type));
+        print("type: %s (%s)",type_to_char(token.type), file->name.text);
     }
     print("end of %s", file->name.text);
 

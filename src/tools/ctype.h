@@ -22,7 +22,8 @@ static void types() {
         uint4("||"), uint4("&"), uint4("|"), uint4("^"), uint4("~"),
         uint4("&="), uint4("|="), uint4("^="), uint4("<<"), uint4(">>"),
         uint4("<<="), uint4(">>="), 0
-    }; while (_are_operators[i]) are_operators[i] = _are_operators[i++];
+    };
+    while (_are_operators[i]) {are_operators[i] = _are_operators[i]; i++;};
 
     char* operators = "+-/*!=%><()[]{}&|~^;,.";
     char* single = "()[]{}~;,.";
