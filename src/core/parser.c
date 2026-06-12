@@ -42,11 +42,14 @@ int parse_file(size_t fd, struct project* project) {
 
     int r = 0;
 
-    while ((project->lf=file)&&(token = next_token(ptr, end, project)).type!=EOF&&!r) {
-        ptr = token.start;
+    while (!r) {
+        project->lf=file;
+        if ((token = next_token(ptr, end, project)).type==EOF) break;
+        // ptr = token.start;
         // if (token.start)
-        //     print("type: %s, token: %.*s",type_to_char(token.type),(int)token.len,token.buffer);
+        print("type: %s",type_to_char(token.type));
     }
+    print("end of %s", file->name.text);
 
     free(buffer);
 

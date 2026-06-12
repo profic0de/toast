@@ -36,11 +36,11 @@ again:
             }
         } else {while (*buffer&&*buffer++!='\n'); goto again;}
     }}
+    print("%c, %c",c ,*buffer);
     if (is_single(c)) return (struct token){.type=SYMBOL,.start=buffer-1};
     if (is_operator(c)) return (struct token){.type=OPERATOR,.start=buffer-1};
     if (is_kws(c)) return (struct token){.type=KEYWORD,.start=buffer-1};
     if (is_digit(c)) return (struct token){.type=NUMBER,.start=buffer-1};
-    print("end of %s",project->lf->name.text);
 
     struct token token;
     token.start=buffer;
