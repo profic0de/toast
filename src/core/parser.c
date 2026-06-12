@@ -28,7 +28,7 @@ struct token next_token(char* buffer, char* end, struct project* project);
 
 int parse_file(size_t fd, struct project* project) {
     struct file* file = project->lf;
-    value(file->path.text);
+    // value(file->path.text);
     size_t size = lseek(fd, 0, SEEK_END);
     lseek(fd, 0, SEEK_SET);
 
