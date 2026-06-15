@@ -46,9 +46,13 @@ void** array_append(void** arr, void* ptr);
 void error(const char* filename, size_t pos, size_t token_len, const char* fmt, ...);
 
 #undef EOF
-enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,OPERATOR};
+enum token_type {ERR,EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,OPERATOR,NSTRING};
 struct token {
     enum token_type type;
+    union {
+        double f;
+        uint64_t i;
+    };
     char* start;
     size_t len;
 };

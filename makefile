@@ -1,6 +1,6 @@
 SRC = $(filter-out $(shell find . -wholename './ignore/*.c'),$(shell find . -name '*.c'))
 OBJ := $(SRC:%=./build/%.o)
-ARGs = -std=c23 -I. -Isrc -Wall -Wno-misleading-indentation -Wno-deprecated-declarations -Wno-nonnull -Wno-sequence-point -Wno-multichar -Wno-restrict
+ARGs = -std=c23 -I. -Isrc -Wall -Wno-misleading-indentation -Wno-deprecated-declarations -Wno-nonnull -Wno-sequence-point -Wno-multichar -Wno-restrict -Wno-unused-value
 ARGS = -O0 $(ARGs)
 # ARGS = -O3 $(ARGs)
 OUT = out

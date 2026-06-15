@@ -32,8 +32,8 @@ again:
             }
 
             int r; if ((r=load_file((string){.text=token_start,.len=len}, project))){
-                error(project->lf->path.text, token_start-start, len, "error: invalid path");
-                return (struct token){.type=EOF};
+                error(project->lf->path.text, token_start-start, len+1, "error: invalid path");
+                return (struct token){.type=ERR};
             }
             goto again;
         } else {while (*buffer&&*buffer++!='\n'); goto again;}
@@ -42,6 +42,8 @@ again:
     if (is_operator(c)) return (struct token){.type=OPERATOR,.start=buffer-1};
     if (is_kws(c)) return (struct token){.type=KEYWORD,.start=buffer-1};
     if (is_digit(c)) return (struct token){.type=NUMBER,.start=buffer-1};
+    if (c=='"') return (struct token){.type=STRING,.start=buffer-1};
+    if (c=='\'') return (struct token){.type=NSTRING,.start=buffer-1};
 
     return (struct token){.type=EOF};
 }
@@ -50,18 +52,17 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
     // enum token_type {EOF,NUMBER,FLOAT,KEYWORD,SYMBOL,STRING,PATH,WORD,OPERATOR};
     struct file* file = project->lf;
     struct token token = next_token_start(*buffer, start, end, project);
+    *buffer = token.start;
 
     switch (token.type) {
     case SYMBOL: {
-        *buffer = token.start+1;
+        *buffer += 1;
         return (struct token){.type=SYMBOL,.start=token.start,.len=1};
     }
     
     case OPERATOR: {
         uint8_t i = 0;
         uint8_t buf[5] = {0};
-
-        *buffer = token.start;
 
         memcpy(buf, *buffer, min(sizeof(buf)-1, end-(*buffer)));
         i=0; while (++i) if (!is_operator(buf[i])) {
@@ -80,27 +81,73 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
     }
 
     case KEYWORD: {
-        *buffer = token.start;
         uint8_t* buf = (uint8_t*)*buffer;
         while (is_kw(*++buf));
 
         size_t len = buf-(uint8_t*)*buffer;
         *buffer += len;
         return (struct token){.start=token.start, .len=len, .type=KEYWORD};
-
-        break;
     }
 
     case NUMBER: {
-        *buffer = token.start;
         uint8_t* buf = (uint8_t*)*buffer;
+        token.i += (*buf-'0')*10;
+    again_n:
+        while (is_digit(*++buf)) token.f = token.f*10+*buf-'0';
+    
+        if (*buf=='_') goto again_n;
+        size_t len = buf-(uint8_t*)token.start;
+        if (*buf=='.') (token.type=FLOAT)&&(token.f==(double)token.i)&&(token.len=len);
+        else {
+            *buffer += len;
+            return (struct token){.start=token.start, .len=len, .type=NUMBER, .i=token.i};
+        }
+        double s = 1;
 
-        while (is_digit(*buf))
-        break;
+    again_f:
+        while (is_digit(*++buf)) token.f += (s/=10)*(*buf-'0');
+        if (*buf=='_') goto again_f;
+        len = buf-(uint8_t*)token.start;
+        *buffer += len;
+        return (struct token){.start=token.start, .len=len, .type=FLOAT, .f=token.f};
     }
 
     case STRING: {
+        uint8_t* buf = (uint8_t*)*buffer;
+        if (*(buf+1)=='"'&&*(buf+2)=='"') {
+            buf+=2;
+    again_bs:
+            while (*++buf!='"'&&*buf);
+            if (!buf[0]) {
+                error(file->path.text, token.start-start, 3, "error: string was never closed");
+                return (struct token){.type=ERR};
+            }
 
+            if (*(buf+1)!='"'||*(buf+2)!='"') goto again_bs;
+            //TODO: Manage cases like \"""
+
+            size_t len = buf-(uint8_t*)token.start;
+            *buffer += len+3;
+            return (struct token){.start=token.start+3, .len=len-3, .type=STRING};
+
+        } else {
+    again_s:
+            while (*++buf!='"'&&*buf);
+            if (!buf[0]) {
+                error(file->path.text, token.start-start, 1, "error: string was never closed");
+                return (struct token){.type=ERR};
+            }
+            
+            if (*buf) goto again_s;
+            //TODO: Finish the parser
+
+        }
+        
+        break;
+    }
+
+    case NSTRING: {
+        
         break;
     }
 
