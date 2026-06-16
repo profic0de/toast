@@ -125,6 +125,7 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
 
             if (*(buf+1)!='"'||*(buf+2)!='"') goto again_bs;
             //TODO: Manage cases like \"""
+            if ((*(buf-2)=='\\'&&*(buf-3)!='\\')) goto again_bs;
 
             size_t len = buf-(uint8_t*)token.start;
             *buffer += len+3;
