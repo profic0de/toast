@@ -49,7 +49,7 @@ int parse_file(size_t fd, struct project* project) {
         if ((token = next_token(&ptr, buffer, end, project)).type==ERR||token.type==EOF) break;
         // ptr = token.start;
         // if (token.start)
-        print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);
+        // print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);
     }
     print("end of %s", file->name.text);
 

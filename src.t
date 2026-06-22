@@ -59,4 +59,3 @@ int help(a) {return a}
 int multiply(x, y) {
 	return x*y
 }
-'123'
