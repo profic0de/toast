@@ -154,12 +154,13 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
 
     case NSTRING: {
         uint8_t* buf = (uint8_t*)*buffer;
+    again_ns:
         while (*++buf!='\''&&*buf&&*buf!='\n') token.i+=*buf;
         if (!buf[0]||*buf=='\n') {
             error(file->path.text, token.start-start, 1, "error: string was never closed");
             return (struct token){.type=ERR};
         }
-        if ((*(buf-1)=='\\'&&*(buf-2)!='\\')) goto again_s;
+        if ((*(buf-1)=='\\'&&*(buf-2)!='\\')) goto again_ns;
         size_t len = buf-(uint8_t*)token.start-1;
         *buffer+=len+2;
         return (struct token){.start=token.start+1, .len=len, .type=NUMBER, .i=token.i};
