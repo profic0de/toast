@@ -3,12 +3,13 @@
 #include "tools/ctype.h"
 
 int main() {
-    char bytes[] = "\\\"";
-    char* buf = bytes+sizeof(bytes)-1;
+    char bytes[] = "\\\\\"";
+    char* buf = bytes+sizeof(bytes)-2;
 
-    int val = (*(buf-2)=='\\'&&*(buf-3)!='\\');
+    int val = (*(buf-1)=='\\'&&*(buf-2)!='\\');
 
-    printf("%d\n",val);
+    printf("%c\n",*buf);
+    printf("%s: %d\n", bytes, val);
 
     return 0;
 }

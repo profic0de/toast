@@ -124,31 +124,46 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
             }
 
             if (*(buf+1)!='"'||*(buf+2)!='"') goto again_bs;
-            //TODO: Manage cases like \"""
-            if ((*(buf-2)=='\\'&&*(buf-3)!='\\')) goto again_bs;
+            if ((*(buf-1)=='\\'&&*(buf-2)!='\\')) goto again_bs;
 
             size_t len = buf-(uint8_t*)token.start;
             *buffer += len+3;
-            return (struct token){.start=token.start+3, .len=len-3, .type=STRING};
+            return (struct token){.start=token.start+3, .len=len-3, .type=BSTRING};
 
         } else {
     again_s:
-            while (*++buf!='"'&&*buf);
-            if (!buf[0]) {
+            while (*++buf!='"'&&*buf&&*buf!='\n');
+            if (!buf[0]||*buf=='\n') {
                 error(file->path.text, token.start-start, 1, "error: string was never closed");
                 return (struct token){.type=ERR};
             }
+            if ((*(buf-1)=='\\'&&*(buf-2)!='\\')) goto again_s;
             
-            if (*buf) goto again_s;
+            size_t len = buf-(uint8_t*)token.start;
+            *buffer += len+1;
+            return (struct token){.start=token.start+1, .len=len-1, .type=STRING};
+
+            // if (*buf) goto again_s;
             //TODO: Finish the parser
 
+            if (*buf) goto again_s;
         }
         
         break;
     }
 
     case NSTRING: {
-        
+        uint8_t* buf = (uint8_t*)*buffer;
+        while (*++buf!='\''&&*buf&&*buf!='\n') token.i+=*buf;
+        if (!buf[0]||*buf=='\n') {
+            error(file->path.text, token.start-start, 1, "error: string was never closed");
+            return (struct token){.type=ERR};
+        }
+        if ((*(buf-1)=='\\'&&*(buf-2)!='\\')) goto again_s;
+        size_t len = buf-(uint8_t*)token.start-1;
+        *buffer+=len+2;
+        return (struct token){.start=token.start+1, .len=len, .type=NUMBER, .i=token.i};
+
         break;
     }
 
