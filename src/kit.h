@@ -50,6 +50,8 @@ enum token_type {
         OPER_AND_ASSIGN,OPER_OR_ASSIGN,OPER_XOR_ASSIGN,
         OPER_LEFT_SHIFT,OPER_RIGHT_SHIFT,
         OPER_LEFT_SHIFT_ASSIGN,OPER_RIGHT_SHIFT_ASSIGN,
+
+    TOKEN_TYPES
 };
 struct token {
     enum token_type type;
@@ -63,6 +65,8 @@ struct token {
 
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #include "core/ast.h"
+
+extern uint8_t is_type[TOKEN_TYPES];
 
 struct file {
     string name;
@@ -93,6 +97,7 @@ struct parser {
 
 struct token next_token(char** buffer, char* start, char* end, struct project* project);
 static inline struct token next(struct parser* p) {return (p->tok=next_token(p->buffer, p->start, p->end, p->p));}
+static inline void back(struct parser* p) {*p->buffer=p->tok.start;}
 static inline int expect(struct parser* p, enum token_type type) {
     struct token t = next(p);
     if (t.type != type) return (error(p->p->lf->path.text,t.start - p->start, t.len, "error: unexpected token"),0);

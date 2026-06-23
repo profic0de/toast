@@ -1,5 +1,6 @@
 #include <ctype.h>
 #include <stdint.h>
+#include "kit.h"
 #define uint4(s) (__extension__ ({ uint32_t _v; __builtin_memcpy(&_v, s"\0\0\0\0", 4); _v; }))
 #define uint8(s) (__extension__ ({ uint64_t _v; __builtin_memcpy(&_v, s"\0\0\0\0\0\0\0\0", 8); _v; }))
 
@@ -12,11 +13,15 @@ char is_single[256];
 char is_operator[256];
 uint64_t are_keywords[256];
 uint32_t are_operators[256];
+extern uint8_t is_type[TOKEN_TYPES];
 
 __attribute__((constructor))
 static void types() {
     uint8_t i = 0;
-    uint32_t _are_operators[] = {
+    uint8_t _are_types[] = {IDENT, KW_VAR, KW_LET, KW_FUNC, 0};
+    while (_are_types[i]) {is_type[i] = _are_types[i]; i++;};
+
+    i=0; uint32_t _are_operators[] = {
         uint4("+"), uint4("-"), uint4("*"), uint4("/"), uint4("%"),
         uint4("++"), uint4("--"), uint4("="), uint4("+="), uint4("-="),
         uint4("*="), uint4("/="), uint4("%="), uint4("=="), uint4("!="),

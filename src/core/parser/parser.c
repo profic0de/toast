@@ -65,7 +65,7 @@ int parse_file(size_t fd, struct project* project) {
 
     while (!r) {
         project->lf=file;
-        if ((token = next(&p)).type==ERR||token.type==EOF) break;
+        if ((token = next(&p)).type<=EOF) break;
         int parse_func(struct parser* p);
         
         project->lf=file;
@@ -78,6 +78,5 @@ int parse_file(size_t fd, struct project* project) {
 
     free(buffer);
 
-    if (token.type==ERR) return 1;
-    return 0;
+    return !token.type||r;
 }

@@ -4,6 +4,9 @@
 
 enum node_type {
     NODE_ROOT,
+    NODE_PARAMS,
+    NODE_DECL,
+    NODE_PARAM,
     NODE_FUNC,
     NODE_VAR,
     NODE_CONST
