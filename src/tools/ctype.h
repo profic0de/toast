@@ -26,7 +26,7 @@ static void types() {
     while (_are_operators[i]) {are_operators[i] = _are_operators[i]; i++;};
 
     char* operators = "+-/*!=%><()[]{}&|~^;,.";
-    char* single = "()[]{}~;,.";
+    char* single = "()[]{};,.";
 
     i=0; while (++i) is_digit[i] = !!isdigit(i);
     i=0; while (++i) is_space[i] = !!isspace(i);
