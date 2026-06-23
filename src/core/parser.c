@@ -19,6 +19,11 @@ char* type_to_char(enum token_type token_type) {
     case_macro(BSTRING);
     case_macro(NSTRING);
     case_macro(LEFT_PAREN);
+    case_macro(IDENT);
+    case_macro(COLON);
+    case_macro(KW_VAR); case_macro(KW_FUNC); case_macro(KW_LET); case_macro(KW_OBJ)
+    case_macro(KW_SELF); case_macro(KW_RETURN); case_macro(KW_BREAK); case_macro(KW_IF)
+    case_macro(KW_WAIT); case_macro(KW_YIELD); case_macro(KW_WHILE);
     case_macro(RIGHT_PAREN);case_macro(LEFT_BRACKET);case_macro(RIGHT_BRACKET);case_macro(LEFT_BRACE);
     case_macro(RIGHT_BRACE);case_macro(SEMICOLON);case_macro(COMMA);case_macro(DOT)
     
@@ -41,6 +46,9 @@ char* type_to_char(enum token_type token_type) {
 }
 
 struct token next_token(char** buffer, char* start, char* end, struct project* project);
+static inline struct token next(struct parser p) {
+    return next_token(p.buffer, p.start, p.end, p.p);
+}
 
 int parse_file(size_t fd, struct project* project) {
     struct file* file = project->lf;
@@ -58,12 +66,14 @@ int parse_file(size_t fd, struct project* project) {
 
     int r = 0;
 
+    struct parser p = {.buffer=&ptr, .start=buffer, .end=end, .p=project};
+
     while (!r) {
         project->lf=file;
-        if ((token = next_token(&ptr, buffer, end, project)).type==ERR||token.type==EOF) break;
+        if ((token = next(p)).type==ERR||token.type==EOF) break;
         // ptr = token.start;
         // if (token.start)
-        print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);
+        // print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);
     }
     // print("end of %s", file->name.text);
 

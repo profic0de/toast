@@ -39,6 +39,14 @@ struct project {
     struct file* lf; // last file
 };
 
+struct parser {
+    char** buffer;
+    char* start;
+    char* end;
+
+    struct project* p;
+};
+
 void* auto_free(void* ptr);
 void str_append(char** str, char c);
 int dict_append(char*** arr, char* ptr);
@@ -47,9 +55,12 @@ void error(const char* filename, size_t pos, size_t token_len, const char* fmt, 
 
 #undef EOF
 enum token_type {
-    ERR,EOF,NUMBER,FLOAT,KEYWORD,STRING,PATH,WORD,NSTRING,BSTRING,
+    ERR,EOF,NUMBER,FLOAT,STRING,PATH,WORD,NSTRING,BSTRING,IDENT,
+    KEYWORD,
+        KW_VAR, KW_FUNC, KW_LET, KW_OBJ, KW_SELF, KW_RETURN, KW_BREAK, KW_IF, KW_WAIT,
+        KW_YIELD, KW_WHILE,
     SYMBOL,
-        LEFT_PAREN,RIGHT_PAREN,LEFT_BRACKET,RIGHT_BRACKET,LEFT_BRACE,RIGHT_BRACE,SEMICOLON,COMMA,DOT,
+        LEFT_PAREN,RIGHT_PAREN,LEFT_BRACKET,RIGHT_BRACKET,LEFT_BRACE,RIGHT_BRACE,SEMICOLON,COMMA,DOT,COLON,
     OPERATOR,
         OPER_PLUS,OPER_MINUS,OPER_STAR,OPER_SLASH,OPER_PERCENT,
         OPER_INCREMENT,OPER_DECREMENT,
@@ -72,7 +83,6 @@ struct token {
     size_t len;
 };
 
-#define uint8(s) (__extension__ ({ uint64_t _v; __builtin_memcpy(&_v, s, 8); _v; }))
 #define lookup(size_t, c) (((0x0101010101010101*c ^ size_t) - 0x0101010101010101) & ~(0x0101010101010101*c ^ size_t) & 0x8080808080808080)
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)

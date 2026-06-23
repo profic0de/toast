@@ -88,11 +88,19 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
 
     case KEYWORD: {
         uint8_t* buf = (uint8_t*)*buffer;
+        uint64_t kw = 0;
         while (is_kw(*++buf));
 
         size_t len = buf-(uint8_t*)*buffer;
+        memcpy(&kw, *buffer, min(8,len));
+
+        uint64_t* kws = are_keywords-1;
         *buffer += len;
-        return (struct token){.start=token.start, .len=len, .type=KEYWORD};
+
+        while (*++kws) if (*kws==kw)
+            return (struct token){.start=token.start, .len=len, .type=KEYWORD+kws-are_keywords+1};
+
+        return (struct token){.start=token.start, .len=len, .type=IDENT};
     }
 
     case NUMBER: {

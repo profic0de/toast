@@ -3,7 +3,7 @@ const Vec2 = struct {
     y: auto = 7.0;
 };
 
-// same as above
+# same as above
 const Point = struct {
     x := 6.0;
     y := 7.0;
