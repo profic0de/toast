@@ -45,10 +45,7 @@ char* type_to_char(enum token_type token_type) {
     return str;
 }
 
-struct token next_token(char** buffer, char* start, char* end, struct project* project);
-static inline struct token next(struct parser p) {
-    return next_token(p.buffer, p.start, p.end, p.p);
-}
+static inline struct token next(struct parser p) {return next_token(p.buffer, p.start, p.end, p.p);}
 
 int parse_file(size_t fd, struct project* project) {
     struct file* file = project->lf;
@@ -71,6 +68,9 @@ int parse_file(size_t fd, struct project* project) {
     while (!r) {
         project->lf=file;
         if ((token = next(p)).type==ERR||token.type==EOF) break;
+        int parse_func(struct parser p);
+        
+        if (token.type==KW_FUNC) r += parse_func(p);
         // ptr = token.start;
         // if (token.start)
         // print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);
@@ -78,17 +78,6 @@ int parse_file(size_t fd, struct project* project) {
     // print("end of %s", file->name.text);
 
     free(buffer);
-
-    // if (bytes) {
-    //     tokens = array_append(tokens, strdup(*bytes));
-    //     types = array_append(types, token_type);
-    //     return NULL;
-    // }
-
-    // size_t len = 0; 
-    // for (size_t i=0; tokens[i]; len=++i) types[i] = types[i*2]; // Shifting the types array bc the enum is int and the array consists of pointers so i need to multiply the index by 2 to skip the 0's :)
-
-    // printf("declared %s, (%s)\n",tokens[i+1], tokens[i]);
 
     if (token.type==ERR) return 1;
     return 0;
