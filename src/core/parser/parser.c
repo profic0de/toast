@@ -45,8 +45,6 @@ char* type_to_char(enum token_type token_type) {
     return str;
 }
 
-static inline struct token next(struct parser p) {return next_token(p.buffer, p.start, p.end, p.p);}
-
 int parse_file(size_t fd, struct project* project) {
     struct file* file = project->lf;
     // value(file->path.text);
@@ -67,10 +65,10 @@ int parse_file(size_t fd, struct project* project) {
 
     while (!r) {
         project->lf=file;
-        if ((token = next(p)).type==ERR||token.type==EOF) break;
-        int parse_func(struct parser p);
+        if ((token = next(&p)).type==ERR||token.type==EOF) break;
+        int parse_func(struct parser* p);
         
-        if (token.type==KW_FUNC) r += parse_func(p);
+        if (token.type==KW_FUNC) r += parse_func(&p);
         // ptr = token.start;
         // if (token.start)
         // print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);

@@ -30,23 +30,6 @@ struct file {
     string path;
 };
 
-struct project {
-    struct file* main_file;
-
-    char** src_paths;
-    char** lib_paths;
-    struct hashmap* files;
-    struct file* lf; // last file
-};
-
-struct parser {
-    char** buffer;
-    char* start;
-    char* end;
-
-    struct project* p;
-};
-
 void* auto_free(void* ptr);
 void str_append(char** str, char c);
 int dict_append(char*** arr, char* ptr);
@@ -83,7 +66,32 @@ struct token {
     size_t len;
 };
 
+struct project {
+    struct file* main_file;
+
+    char** src_paths;
+    char** lib_paths;
+    struct hashmap* files;
+    struct file* lf; // last file
+};
+
+struct parser {
+    char** buffer;
+    char* start;
+    char* end;
+
+    struct token tok;
+
+    struct project* p;
+};
+
 struct token next_token(char** buffer, char* start, char* end, struct project* project);
+static inline struct token next(struct parser* p) {return (p->tok=next_token(p->buffer, p->start, p->end, p->p));}
+static inline int expect(struct parser* p, enum token_type type) {
+    struct token t = next(p);
+    if (t.type != type) return (error(p->p->lf->path.text,t.start - p->start, t.len, "error: unexpected token"),0);
+    return 1;
+}
 
 #define lookup(size_t, c) (((0x0101010101010101*c ^ size_t) - 0x0101010101010101) & ~(0x0101010101010101*c ^ size_t) & 0x8080808080808080)
 #define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))

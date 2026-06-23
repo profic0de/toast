@@ -1,7 +1,8 @@
 #include "kit.h"
-static inline struct token next(struct parser p) {return next_token(p.buffer, p.start, p.end, p.p);}
 
-int parse_func(struct parser p) {
+int parse_func(struct parser* p) {
+    
+    if (!expect(p, IDENT)) return 1;
 
     return 0;
 }
