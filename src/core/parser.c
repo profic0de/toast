@@ -20,7 +20,8 @@ char* type_to_char(enum token_type token_type) {
     case_macro(NSTRING);
     case_macro(LEFT_PAREN);
     case_macro(RIGHT_PAREN);case_macro(LEFT_BRACKET);case_macro(RIGHT_BRACKET);case_macro(LEFT_BRACE);
-    case_macro(RIGHT_BRACE);case_macro(TILDE);case_macro(SEMICOLON);case_macro(COMMA);case_macro(DOT)
+    case_macro(RIGHT_BRACE);case_macro(SEMICOLON);case_macro(COMMA);case_macro(DOT)
+    
     case_macro(OPER_PLUS);case_macro(OPER_MINUS);case_macro(OPER_STAR);case_macro(OPER_SLASH);case_macro(OPER_PERCENT);
     case_macro(OPER_INCREMENT);case_macro(OPER_DECREMENT);
     case_macro(OPER_ASSIGN);case_macro(OPER_ADD_ASSIGN);case_macro(OPER_SUB_ASSIGN);case_macro(OPER_MUL_ASSIGN);case_macro(OPER_DIV_ASSIGN);case_macro(OPER_MOD_ASSIGN);
