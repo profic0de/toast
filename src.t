@@ -5,23 +5,23 @@ int g = 0;
 
 int main() {
 	# Variables and basic arithmetic
-	f = 3.14
-	a = 3
-	b = 4
-	c = 3 + 4
-	d = 10 / 2
+	var f = 3.14
+	var a = 3
+	var b = 4
+	var c = 3 + 4
+	var d = 10 / 2
 
 	# Bitwise operations
-	e = 3 >> 4
-	f = 8 << 2
-	g = 12 & 5
-	h = 8 | 2
-	i = 5 ^ 3
+	var e = 3 >> 4
+	var f = 8 << 2
+	var g = 12 & 5
+	var h = 8 | 2
+	var i = 5 ^ 3
 	
 	# Compound assignment operators
-	x = 5
+	var x = 5
 	x *= 2
-	y = 20
+	var y = 20
 	y /= 4
 	
 	# String literals with printf
@@ -32,12 +32,12 @@ int main() {
 	printf("Result: %d, Division: %d\n", c, d)
 	
 	# More complex expressions
-	result = (a + b) * 2
+	var result = (a + b) * 2
 	printf("(a + b) * 2 = %d\n", result)
 	
 	# Negative numbers
-	neg = -5
-	pos = 10 + neg
+	var neg = -5
+	var pos = 10 + neg
 	printf("pos = %d\n", pos)
 	
 	# Compound assignments in action
@@ -59,4 +59,3 @@ int help(a) {return a}
 int multiply(x, y) {
 	return x*y
 }
-'2'
