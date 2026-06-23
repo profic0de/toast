@@ -57,7 +57,7 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
     switch (token.type) {
     case SYMBOL: {
         *buffer += 1;
-        return (struct token){.type=SYMBOL,.start=token.start,.len=1};
+        return (struct token){.type=SYMBOL+is_single(*(uint8_t*)token.start),.start=token.start,.len=1};
     }
     
     case OPERATOR: {
@@ -78,8 +78,10 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
         uint32_t oper = *((uint32_t*)buf);
         uint32_t* opers = are_operators-1;
 
-        while (*++opers) if (*opers==oper) return (struct token){.start=token.start, .len=i, .type=OPERATOR};
-
+        while (*++opers) if (*opers==oper) {
+            size_t id = opers-are_operators+1;
+            return (struct token){.start=token.start, .len=i, .type=OPERATOR+id};
+        }
         error(file->path.text, token.start-start, i, "error: invalid operator");
         return (struct token){.type=ERR};
     }
