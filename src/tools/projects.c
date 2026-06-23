@@ -55,11 +55,13 @@ int load_file(string filepath, struct project* project) {
 
     // value(fl);
     // value((char*)(text+len-fl));
+    file = &(struct file){};
 
-    hashmap_set(project->files, &(struct file){
-        .path={.text=text, .len=len},
-        .name={.text=text+len-fl, .len=fl}
-    });
+    memset(file, 0, sizeof(struct file));
+    file->path=(struct string){.text=text, .len=len};
+    file->name=(struct string){.text=text+len-fl, .len=fl};
+
+    hashmap_set(project->files, file);
 
     file = (struct file*)hashmap_get(project->files, &(struct file){
         .path={.text=str_box+1, .len=len}

@@ -25,11 +25,6 @@ typedef struct string {
     uint16_t len;
 } string;
 
-struct file {
-    string name;
-    string path;
-};
-
 void* auto_free(void* ptr);
 void str_append(char** str, char c);
 int dict_append(char*** arr, char* ptr);
@@ -66,6 +61,16 @@ struct token {
     size_t len;
 };
 
+#define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
+#include "core/ast.h"
+
+struct file {
+    string name;
+    string path;
+
+    struct node ast; 
+};
+
 struct project {
     struct file* main_file;
 
@@ -83,6 +88,7 @@ struct parser {
     struct token tok;
 
     struct project* p;
+    struct node* ast;
 };
 
 struct token next_token(char** buffer, char* start, char* end, struct project* project);
@@ -94,7 +100,6 @@ static inline int expect(struct parser* p, enum token_type type) {
 }
 
 #define lookup(size_t, c) (((0x0101010101010101*c ^ size_t) - 0x0101010101010101) & ~(0x0101010101010101*c ^ size_t) & 0x8080808080808080)
-#define array_append(arr, ptr) ((__typeof__(arr))array_append(((void**)(arr)), ((void*)(ptr))))
 #define print(fmt, ...) printf("[%s:%d] " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #define marker printf("[%s:%d] marker\n", __FILE__, __LINE__);
 #define value(x) printf(_Generic((x), int: "[%s:%d] %s: %d\n", char: "[%s:%d] %s: %c\n", uint8_t: "[%s:%d] %s: %c\n", unsigned: "[%s:%d] %s: %u\n", long: "[%s:%d] %s: %ld\n", unsigned long: "[%s:%d] %s: %lu\n", long long: "[%s:%d] %s: %lld\n", unsigned long long: "[%s:%d] %s: %llu\n", float: "[%s:%d] %s: %f\n", double: "[%s:%d] %s: %lf\n", char*: "[%s:%d] %s: %s\n", const char*: "[%s:%d] %s: %s\n", default: "[%s:%d] %s: %p\n"), __FILE__, __LINE__, #x, (x))

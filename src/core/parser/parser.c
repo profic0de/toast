@@ -61,14 +61,15 @@ int parse_file(size_t fd, struct project* project) {
 
     int r = 0;
 
-    struct parser p = {.buffer=&ptr, .start=buffer, .end=end, .p=project};
+    struct parser p = {.buffer=&ptr, .start=buffer, .end=end, .p=project, .ast=&file->ast};
 
     while (!r) {
         project->lf=file;
         if ((token = next(&p)).type==ERR||token.type==EOF) break;
         int parse_func(struct parser* p);
         
-        if (token.type==KW_FUNC) r += parse_func(&p);
+        project->lf=file;
+        if (token.type==KW_FUNC) r += !parse_func(&p);
         // ptr = token.start;
         // if (token.start)
         // print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);

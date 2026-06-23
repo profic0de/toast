@@ -1,8 +1,10 @@
 #include "kit.h"
 
-int parse_func(struct parser* p) {
-    
-    if (!expect(p, IDENT)) return 1;
+struct node* parse_func(struct parser* p) {
+    struct node* ast = p->ast;
+    if (!expect(p, IDENT)) return NULL;
+    struct node* node = auto_free(calloc(1, sizeof(struct node)));
+    node->type=NODE_FUNC;
 
-    return 0;
+    return node;
 }
