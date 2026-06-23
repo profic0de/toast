@@ -69,7 +69,11 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
             memset(buf+i, 0, sizeof(buf)-1-i);
             break;
         } *buffer += i;
-        if (buf[3]) {error(file->path.text, token.start-start, i, "error: invalid operator"); goto exit;}
+
+        if (buf[3]) {
+            error(file->path.text, token.start-start, i, "error: invalid operator");
+            return (struct token){.type=ERR};
+        }
 
         uint32_t oper = *((uint32_t*)buf);
         uint32_t* opers = are_operators-1;
@@ -77,7 +81,7 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
         while (*++opers) if (*opers==oper) return (struct token){.start=token.start, .len=i, .type=OPERATOR};
 
         error(file->path.text, token.start-start, i, "error: invalid operator");
-        break;
+        return (struct token){.type=ERR};
     }
 
     case KEYWORD: {
@@ -142,35 +146,30 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
             size_t len = buf-(uint8_t*)token.start;
             *buffer += len+1;
             return (struct token){.start=token.start+1, .len=len-1, .type=STRING};
-
-            // if (*buf) goto again_s;
-            //TODO: Finish the parser
-
-            if (*buf) goto again_s;
         }
-        
-        break;
     }
 
     case NSTRING: {
         uint8_t* buf = (uint8_t*)*buffer;
     again_ns:
-        while (*++buf!='\''&&*buf&&*buf!='\n') token.i+=*buf;
+        while (*++buf!='\''&&*buf&&*buf!='\n');
         if (!buf[0]||*buf=='\n') {
             error(file->path.text, token.start-start, 1, "error: string was never closed");
             return (struct token){.type=ERR};
         }
         if ((*(buf-1)=='\\'&&*(buf-2)!='\\')) goto again_ns;
         size_t len = buf-(uint8_t*)token.start-1;
+        if (len>8) {
+            error(file->path.text, token.start-start, 1, "error: numeric string was too long");
+            return (struct token){.type=ERR};
+        }
+        memcpy(&token.i, token.start+1, len);
         *buffer+=len+2;
         return (struct token){.start=token.start+1, .len=len, .type=NUMBER, .i=token.i};
-
-        break;
     }
 
     default: break;
     }
 
-exit:
     return (struct token){.type=EOF};
 }
