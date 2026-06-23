@@ -97,7 +97,7 @@ struct token next_token(char** buffer, char* start, char* end, struct project* p
         uint8_t* buf = (uint8_t*)*buffer;
         token.i += (*buf-'0')*10;
     again_n:
-        while (is_digit(*++buf)) token.f = token.f*10+*buf-'0';
+        while (is_digit(*++buf)) token.i = token.i*10+*buf-'0';
     
         if (*buf=='_') goto again_n;
         size_t len = buf-(uint8_t*)token.start;
