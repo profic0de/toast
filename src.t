@@ -1,15 +1,15 @@
 # require <test>
 #require <stdio>
 
-int g = 0;
+var g = 0;
 
-int main() {
+func main() {
 	# Variables and basic arithmetic
 	var f = 3.14
-	var a = 3
-	var b = 4
-	var c = 3 + 4
-	var d = 10 / 2
+	let a = 3
+	let b = 4
+	let c = 3 + 4
+	let d = 10 / 2
 
 	# Bitwise operations
 	var e = 3 >> 4
@@ -32,12 +32,12 @@ int main() {
 	printf("Result: %d, Division: %d\n", c, d)
 	
 	# More complex expressions
-	var result = (a + b) * 2
+	let result = (a + b) * 2
 	printf("(a + b) * 2 = %d\n", result)
 	
 	# Negative numbers
-	var neg = -5
-	var pos = 10 + neg
+	let neg = -5
+	let pos = 10 + neg
 	printf("pos = %d\n", pos)
 	
 	# Compound assignments in action
@@ -45,17 +45,17 @@ int main() {
 }
 
 obj apple() {
-	int init() {
+	func init() {
 		self.a = 1
 	}
 }
 
-int add(x, y) {
+func add(x, y) {
 	return x + y
 }
 
-int help(a) {return a}
+func help(a) {return a}
 
-int multiply(x, y) {
+func multiply(x, y) {
 	return x*y
 }
