@@ -1,6 +1,6 @@
 #include "kit.h"
 
-static inline struct node parse_params(struct parser* p) {
+struct node parse_params(struct parser* p) {
     struct node* ast = p->ast;
     struct node params = {.children=NULL, .token={0}, .type=NODE_PARAMS};
     struct token tok;

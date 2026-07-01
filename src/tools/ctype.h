@@ -18,7 +18,7 @@ extern uint8_t is_type[TOKEN_TYPES];
 __attribute__((constructor))
 static void types() {
     uint8_t i = 0;
-    uint8_t _are_types[] = {IDENT, KW_VAR, KW_LET, KW_FUNC, 0};
+    uint8_t _are_types[] = {IDENT, KW_FUNC, 0};
     while (_are_types[i]) {is_type[i] = _are_types[i]; i++;};
 
     i=0; uint32_t _are_operators[] = {
@@ -35,7 +35,7 @@ static void types() {
     i=0; uint64_t _are_keywords[] = {
         uint8("var"), uint8("func"), uint8("let"), uint8("obj"), uint8("self"), 
         uint8("return"), uint8("break"), uint8("if"), uint8("wait"), uint8("yield"), 
-        uint8("while"), 0
+        uint8("while"), uint8("ref"), 0
     };
     while (_are_keywords[i]) {are_keywords[i] = _are_keywords[i]; i++;};
 

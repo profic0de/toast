@@ -70,6 +70,11 @@ int parse_file(size_t fd, struct project* project) {
         
         project->lf=file;
         if (token.type==KW_FUNC) r += !parse_func(&p);
+        if (r) {
+            *p.buffer=token.start+token.len;
+            next(&p);
+            print("%.*s\n",p.tok.len, p.tok.start);
+        }
         // ptr = token.start;
         // if (token.start)
         // print("%.*s, type: %s (%s)",(int)token.len, token.start, type_to_char(token.type), file->name.text);

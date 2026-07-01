@@ -6,10 +6,13 @@ enum node_type {
     NODE_ROOT,
     NODE_PARAMS,
     NODE_DECL,
+    NODE_TYPE,
+    NODE_CALL,
     NODE_PARAM,
     NODE_FUNC,
     NODE_VAR,
-    NODE_CONST
+    NODE_CONST,
+    NODE_INDEX
 };
 
 struct node {
