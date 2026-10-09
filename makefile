@@ -1,13 +1,11 @@
 SRC = $(filter-out $(shell find . -wholename './ignore/*.c'),$(shell find . -name '*.c'))
 OBJ := $(SRC:%=./build/%.o)
-ARGs = -std=c23 -I. -Isrc -Wall -Wno-misleading-indentation -Wno-deprecated-declarations -Wno-nonnull -Wno-sequence-point -Wno-multichar -Wno-restrict -Wno-unused-value
+ARGs = -std=c23 -I. -Isrc -Wall -Wno-misleading-indentation -Wno-deprecated-declarations -Wno-nonnull -Wno-sequence-point -Wno-multichar -Wno-restrict -Wno-unused-value -Wno-switch -Wno-bool-operation
 ARGS = -O0 $(ARGs)
 # ARGS = -O3 $(ARGs)
 OUT = out
 
-# Gonna use a very big file so i'll optimize the lexer
-# PROGRAM_ARGS = tests/200k.t
-PROGRAM_ARGS = src.t
+PROGRAM_ARGS = ""
 
 run: $(OUT)
 	@echo --------------------
@@ -37,10 +35,11 @@ prod:
 	@echo --------------------
 	@./$(OUT) $(PROGRAM_ARGS)
 
+debug:
+	gcc $(ARGS) -o $(OUT) -g $(SRC)
+	@echo --------------------
+	@./$(OUT) $(PROGRAM_ARGS)
+
 clean:
 	@rm -rf $(OUT)
 	@rm -rf ./build/
-
-ai: # Portable wikipedia XD
-	@python ~/mcords/ai/main.py
-	@rm -rf history.txt
