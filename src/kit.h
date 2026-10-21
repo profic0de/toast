@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <setjmp.h>
+#include <sys/ioctl.h>
 
 #include "structs.h"
 
@@ -31,7 +32,8 @@ void* index_pop(void*** arr);
 void* index_top(void*** arr);
 void print_bits(uint64_t v);
 
-file_t* file_top(proj_t proj);
-file_t* open_file(char* path);
+file_t* file_top(proj_t* proj);
+file_t* open_file(proj_t* proj, char* path);
+bool lex_spaces(proj_t* proj);
 
 #endif

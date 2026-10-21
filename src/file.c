@@ -1,6 +1,6 @@
 #include "kit.h"
 
-file_t* open_file(char* path) {
+file_t* open_file(proj_t* proj, char* path) {
     if (!path) return NULL;
     int fd = open(path, O_RDONLY);
     if (fd == -1) return NULL;
@@ -13,6 +13,10 @@ file_t* open_file(char* path) {
     f.contents.ptr = f.contents.buf;
 
     // lex here
+    file_t* r = allocpy(&f, sizeof(f));
+    index_append((void***)&proj->fstack, r);
 
-    return allocpy(&f, sizeof(f));
+    lex_spaces(proj);
+
+    return index_pop((void***)&proj->fstack);
 }
