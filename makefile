@@ -5,8 +5,8 @@ ARGS = -O0 $(ARGs)
 # ARGS = -O3 $(ARGs)
 OUT = out
 
-PROGRAM_ARGS = "main"
-# PROGRAM_ARGS = "main.t"
+# PROGRAM_ARGS = "main"
+PROGRAM_ARGS = "main.t"
 
 run: $(OUT)
 	@echo --------------------

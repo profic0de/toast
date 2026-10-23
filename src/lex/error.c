@@ -17,7 +17,6 @@ void* lexer_error(proj_t* proj, char* msg) {
         char* sws = proj->last_tok->start-(space/5);
         space = 0;
         while (sws[0]&&sws[0]!='\n') space += !!(sws++);
-        
     }
     if (sws<proj->last_tok->start) sws = proj->last_tok->start;
     printf(asd, proj->last_tok->line, (int)space, sws);

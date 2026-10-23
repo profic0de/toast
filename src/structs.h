@@ -36,6 +36,4 @@ typedef struct project { //"env"
     tok_t* last_tok;
 } proj_t;
 
-
-
 #endif
