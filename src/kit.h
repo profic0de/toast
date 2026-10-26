@@ -36,5 +36,8 @@ file_t* file_top(proj_t* proj);
 file_t* open_file(proj_t* proj, char* path);
 tok_t* lex_statement(proj_t* proj);
 bool lex_spaces(proj_t* proj);
+tok_t* lex_ident(proj_t* proj);
+void* lexer_error(proj_t* proj, char* msg);
+tok_t* rtok(proj_t* proj, tok_t* tok);
 
 #endif

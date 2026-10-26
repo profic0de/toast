@@ -2,8 +2,9 @@
 
 void* lexer_error(proj_t* proj, char* msg) {
     if (!proj->last_tok) return NULL;
+    proj->last_tok->line++;
 
-    printf("%s:%lu:%lu %s\n", proj->last_tok->file->path, proj->last_tok->line, (proj->last_tok->start)-(proj->last_tok->line_start), msg);
+    printf("%s:%lu:%lu %s\n", proj->last_tok->file->path, proj->last_tok->line, proj->last_tok->len?:1, msg);
 
     struct winsize w;
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
@@ -20,6 +21,7 @@ void* lexer_error(proj_t* proj, char* msg) {
     }
     if (sws<proj->last_tok->start) sws = proj->last_tok->start;
     printf(asd, proj->last_tok->line, (int)space, sws);
+    putc('\n', stdout);
 
     return NULL;
 }

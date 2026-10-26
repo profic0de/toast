@@ -4,15 +4,20 @@
 #include "kit.h"
 
 typedef struct file file_t;
+typedef struct token tok_t;
 typedef struct token {
     char* start;
     size_t len;
     file_t* file;
     enum {
         eof, ident,
+        kw, 
+            kw_func, kw_return,
+            kw_var, kw_let,
     } type;
     size_t line;
     char* line_start;
+    tok_t** contents;
 } tok_t;
 
 typedef struct file {
@@ -32,6 +37,7 @@ typedef struct file {
 typedef struct project { //"env"
     file_t** fstack;
     file_t** files;
+    tok_t** tstack;
     tok_t* main_func;
     tok_t* last_tok;
 } proj_t;

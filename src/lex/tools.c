@@ -1,6 +1,7 @@
 #include "kit.h"
 
 inline file_t* file_top(proj_t* proj) {return (file_t*)index_top((void***)&proj->fstack);}
+inline tok_t* rtok(proj_t* proj, tok_t* tok) {return (proj->last_tok = allocpy(tok, sizeof(tok_t)));}
 
 bool lex_spaces(proj_t* proj) {
     file_t* file = file_top(proj);
@@ -8,7 +9,10 @@ bool lex_spaces(proj_t* proj) {
     
 skip:
     char ch;
-    while (isspace((ch=(file->contents.ptr)[0]))) file->contents.ptr++;
+    while (isspace((ch=(file->contents.ptr)[0]))) {
+        if (ch=='\n') file->contents.newlines += !!(file->contents.line_start=file->contents.ptr+1);
+        file->contents.ptr++;
+    }
     switch (ch) {
         case 0: return 0;
         case '#': {
