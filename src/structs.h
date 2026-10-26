@@ -9,11 +9,14 @@ typedef struct token {
     char* start;
     size_t len;
     file_t* file;
-    enum {
-        eof, ident,
-        kw, 
+    enum : uint8_t {
+        // NOTE: Don't forget to update:
+        //      > statement.c:6
+        //      > ident.c:3
+        eof, ident, type, sfs, // stack frame start
+        kw, // oder sensitive
             kw_func, kw_return,
-            kw_var, kw_let,
+            kw_var, kw_let, kw_type,
     } type;
     size_t line;
     char* line_start;
