@@ -14,11 +14,10 @@ static void start() {
 
 tok_t* lex_statement(proj_t* proj) {
     tok_t statement = {0};
-    tok_t** tstack = NULL;
-    #define tok(i) tstack[i+2]
+    #define tok(i) (tok->contents[i+2])
     tok_t* tok = lex_ident(proj);
-    tok->contents = tstack;
-    if (tok) index_append((void***)&tstack, tok);
+    if (tok) index_append((void***)&tok->contents, tok);
+    if ((tok=lex_ident(proj))) index_append((void***)&tok->contents, tok);
 
     switch (tok(0)->type) {
     case kw_func: // func declaration
@@ -30,7 +29,7 @@ tok_t* lex_statement(proj_t* proj) {
     }
     return rlcl(proj, &statement);
 error:
-    while ((tok = index_pop((void***)&tstack)))free(tok);
-    free(tstack);
+    while ((tok = index_pop((void***)&tok->contents)))free(tok);
+    free(tok->contents);
     return NULL;
 }
