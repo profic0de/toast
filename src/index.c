@@ -37,7 +37,7 @@ size_t index_remove(void*** arr, size_t index) {
 
 #undef arr
 void* index_pop(void*** arr) {
-    if (!arr||!*arr) return NULL;
+    if (!arr||!arr[0]) return NULL;
     #define arr (*arr)
     size_t top = (size_t)arr[1];
     if (!top--) return NULL;

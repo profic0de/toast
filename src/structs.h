@@ -17,6 +17,16 @@ typedef struct token {
         kw, // oder sensitive
             kw_func, kw_return,
             kw_var, kw_let, kw_type,
+        oper,
+            oper_semicolon, 
+            oper_rbracket_open, oper_rbracket_close, // round brackets '()'
+            oper_sbracket_open, oper_sbracket_close, // square brackets '[]'
+            oper_cbracket_open, oper_cbracket_close, // curly brackets '{}'
+
+            oper_incr, oper_incr_early, oper_incr_late,
+            oper_addition, oper_substraction, 
+            oper_decr, oper_decr_early, oper_decr_late,
+            oper_equals, oper_assign,
     } type;
     size_t line;
     char* line_start;

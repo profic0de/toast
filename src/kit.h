@@ -40,5 +40,7 @@ tok_t* lex_ident(proj_t* proj);
 void* lexer_error(proj_t* proj, char* msg);
 tok_t* rtok(proj_t* proj, tok_t* tok);
 tok_t* rlcl(proj_t* proj, tok_t* tok);
+tok_t* lex_operator(proj_t* proj);
+tok_t* lex_value(proj_t* proj);
 
 #endif
