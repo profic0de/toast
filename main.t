@@ -1,7 +1,7 @@
 # A comment
 # Another one
 
-func fn;
+local func fn;
 
 func main() -> u8 {
     fn = main;

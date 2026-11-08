@@ -32,7 +32,8 @@ file_t* open_file(proj_t* proj, char* path) {
     index_append((void***)&proj->fstack, file);
 
     tok_t* statement;
-    while ((statement = lex_statement(proj)));
+    while ((statement = lex_statement(proj)))
+        unfold(statement, 0);
 
     return index_pop((void***)&proj->fstack);
 }

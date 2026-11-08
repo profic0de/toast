@@ -14,9 +14,14 @@ typedef struct token {
         //      > statement.c:6
         //      > ident.c:3
         eof, ident, type, sfs, // stack frame start
+        var_ident, type_ident,
+        var_decl, type_decl,
+        func_decl, decl_block,
+        declaration, 
         kw, // oder sensitive
             kw_func, kw_return,
             kw_var, kw_let, kw_type,
+            kw_local,
         oper,
             oper_semicolon, 
             oper_rbracket_open, oper_rbracket_close, // round brackets '()'
@@ -31,6 +36,7 @@ typedef struct token {
     size_t line;
     char* line_start;
     tok_t** contents;
+    bool local;
 } tok_t;
 
 typedef struct file {
@@ -50,7 +56,6 @@ typedef struct file {
 typedef struct project { //"env"
     file_t** fstack;
     file_t** files;
-    tok_t** tstack;
     tok_t* main_func;
     tok_t* last_tok;
 } proj_t;

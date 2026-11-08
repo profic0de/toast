@@ -3,6 +3,7 @@
 static size_t kws[] = {
     s8("func"), s8("return"),
     s8("var"), s8("let"), s8("type"),
+    s8("local"),
 };
 
 tok_t* lex_ident(proj_t* proj) {
@@ -24,6 +25,9 @@ tok_t* lex_ident(proj_t* proj) {
         while (i--) if (kws[i]==t) i=!(tok.type=kw+i+1);
         // debug(tok.type);
     }
+    
+    
+
 
     return rtok(proj, &tok);
 }
