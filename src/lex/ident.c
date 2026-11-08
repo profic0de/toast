@@ -26,8 +26,37 @@ tok_t* lex_ident(proj_t* proj) {
         // debug(tok.type);
     }
     
-    
-
+    if (file->tstack) {
+        size_t i = (size_t)file->tstack[1];
+        while (i--) {
+            tok_t* t = file->tstack[i+2];
+            if (t->type==var_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+                tok.type = var_ident;
+                break;
+            } else if (t->type==type_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+                tok.type = type_ident;
+                break;
+            } else if (t->type==func_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+                tok.type = func_ident;
+                break;
+            }
+        }
+    } if (file->locals) {
+        size_t i = (size_t)file->locals[1];
+        while (i--) {
+            tok_t* t = file->locals[i+2];
+            if (t->type==var_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+                tok.type = var_ident;
+                break;
+            } else if (t->type==type_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+                tok.type = type_ident;
+                break;
+            } else if (t->type==func_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+                tok.type = func_ident;
+                break;
+            }
+        }
+    }
 
     return rtok(proj, &tok);
 }

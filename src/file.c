@@ -35,5 +35,6 @@ file_t* open_file(proj_t* proj, char* path) {
     while ((statement = lex_statement(proj)))
         unfold(statement, 0);
 
+    free(file->tstack);
     return index_pop((void***)&proj->fstack);
 }

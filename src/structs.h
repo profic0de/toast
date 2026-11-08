@@ -14,7 +14,7 @@ typedef struct token {
         //      > statement.c:6
         //      > ident.c:3
         eof, ident, type, sfs, // stack frame start
-        var_ident, type_ident,
+        var_ident, type_ident, func_ident,
         var_decl, type_decl,
         func_decl, decl_block,
         declaration, 
@@ -49,8 +49,9 @@ typedef struct file {
         size_t newlines;
         char* line_start;
     } contents;
-    tok_t globals;
-    tok_t locals;
+    tok_t** globals;
+    tok_t** locals;
+    tok_t** tstack;
 } file_t;
 
 typedef struct project { //"env"

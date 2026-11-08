@@ -29,7 +29,9 @@ tok_t* lex_statement(proj_t* proj) {
     if ((tok=lex_operator(proj))) index_append((void***)&statement->contents, tok);
 
     // TODO: account for: var <oper>
-    if (!types[tok_(0)->type]) {
+    if (tok_(0)->type==var_ident) {
+        log("ADASASD COLLISION");
+
 
     }
     // type var = value
@@ -56,7 +58,7 @@ tok_t* lex_statement(proj_t* proj) {
             statement->line = tok_(1)->line;
             statement->line_start = tok_(1)->line_start;
             statement->start = tok_(1)->start;
-            statement->type = declaration;
+            statement->type = var_decl;
         }
         goto ret;
     }
