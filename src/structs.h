@@ -16,7 +16,7 @@ typedef struct token {
         eof, ident, type, sfs, // stack frame start
         var_ident, type_ident, func_ident,
         var_decl, type_decl,
-        func_decl, decl_block,
+        func_decl, statement_block,
         declaration, 
         kw, // oder sensitive
             kw_func, kw_return,

@@ -1,6 +1,11 @@
 # A comment
 # Another one
 
+{
+    func fn;
+}
+
+local func fn;
 local func fn;
 fn;
 

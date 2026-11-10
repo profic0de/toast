@@ -25,36 +25,30 @@ tok_t* lex_ident(proj_t* proj) {
         while (i--) if (kws[i]==t) i=!(tok.type=kw+i+1);
         // debug(tok.type);
     }
-    
-    if (file->tstack) {
-        size_t i = (size_t)file->tstack[1];
-        while (i--) {
-            tok_t* t = file->tstack[i+2];
-            if (t->type==var_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
-                tok.type = var_ident;
-                break;
-            } else if (t->type==type_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
-                tok.type = type_ident;
-                break;
-            } else if (t->type==func_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
-                tok.type = func_ident;
-                break;
-            }
-        }
-    } if (file->locals) {
+    if (file->locals) {
         size_t i = (size_t)file->locals[1];
         while (i--) {
             tok_t* t = file->locals[i+2];
-            if (t->type==var_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+            // unfold(t, 0);
+            if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
                 tok.type = var_ident;
-                break;
-            } else if (t->type==type_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+            else if (t->type==type_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
                 tok.type = type_ident;
-                break;
-            } else if (t->type==func_decl&&strncmp(t->start, tok.start, min(t->len, tok.len))) {
+            else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
                 tok.type = func_ident;
-                break;
-            }
+            if (tok.type!=ident) break;
+        }
+    } if (file->tstack) {
+        size_t i = (size_t)file->tstack[1];
+        while (i--) {
+            tok_t* t = file->tstack[i+2];
+            if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+                tok.type = var_ident;
+            else if (t->type==type_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+                tok.type = type_ident;
+            else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+                tok.type = func_ident;
+            if (tok.type!=ident) break;
         }
     }
 

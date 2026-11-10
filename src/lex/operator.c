@@ -7,7 +7,7 @@ static void start() {
         ';', '(', ')', '[', ']', '{', '}',
     };
     size_t i = sizeof(var_types);
-    while (i--) single[var_types[i]] = sizeof(var_types)-i;
+    while (i--) single[var_types[i]] = i+1;
 }
 
 tok_t* lex_operator(proj_t* proj) {
