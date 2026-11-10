@@ -3,7 +3,7 @@
 static size_t kws[] = {
     s8("func"), s8("return"),
     s8("var"), s8("let"), s8("type"),
-    s8("local"),
+    s8("solid"), s8("sol"),
 };
 
 tok_t* lex_ident(proj_t* proj) {
@@ -24,6 +24,7 @@ tok_t* lex_ident(proj_t* proj) {
         memcpy(&t, tok.start, tok.len);
         while (i--) if (kws[i]==t) i=!(tok.type=kw+i+1);
         // debug(tok.type);
+        if (tok.type==kw_sol) tok.type=kw_solid;
     }
     if (file->locals) {
         size_t i = (size_t)file->locals[1];

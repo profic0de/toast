@@ -21,7 +21,7 @@ typedef struct token {
         kw, // oder sensitive
             kw_func, kw_return,
             kw_var, kw_let, kw_type,
-            kw_local,
+            kw_solid, kw_sol,
         oper,
             oper_semicolon, 
             oper_rbracket_open, oper_rbracket_close, // round brackets '()'
@@ -36,7 +36,7 @@ typedef struct token {
     size_t line;
     char* line_start;
     tok_t** contents;
-    bool local;
+    bool solid;
 } tok_t;
 
 typedef struct file {

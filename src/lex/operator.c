@@ -46,5 +46,5 @@ tok_t* lex_operator(proj_t* proj) {
     else return NULL;
 
     file->contents.ptr += tok.len;
-    return rlcl(proj, &tok);
+    return rtok(proj, &tok);
 }

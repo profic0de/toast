@@ -5,8 +5,11 @@ inline tok_t* rtok(proj_t* proj, tok_t* tok) {return (proj->last_tok = allocpy(t
 // allocate tok and store it in locals of top file
 inline tok_t* rlcl(proj_t* proj, tok_t* tok) {
     tok_t*t=allocpy(tok, sizeof(tok_t));
-    if (!t->local) index_append((void***)&file_top(proj)->globals, t);
-    return (index_append((void***)&file_top(proj)->locals, t),t);
+    size_t i = t->file->tstack?(size_t)t->file->tstack[1]:0;
+    if (i==0) {
+        if (!t->solid) index_append((void***)&file_top(proj)->globals, t);
+        return (index_append((void***)&file_top(proj)->locals, t),t);
+    } else return (index_append((void***)&file_top(proj)->tstack, t),t);
 }
 
 bool lex_spaces(proj_t* proj) {

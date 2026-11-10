@@ -4,10 +4,14 @@
 {
     func fn;
 }
+func fn
+{
+    func fn;
+}
 
-local func fn;
-local func fn;
-fn;
+# solid func fn
+# solid func fn;
+#fn;
 
 func main() -> u8 {
     fn = main;
