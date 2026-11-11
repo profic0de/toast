@@ -1,4 +1,4 @@
-#include "kit.h"
+#include "statement.h"
 
 static uint8_t types[256]; // is this tok_t.type used for var declaration (in: <type> ident)?
 __attribute__((constructor))
@@ -11,7 +11,6 @@ static void start() {
     while (i--) types[var_types[i]]++;
 }
 
-// allways starts with an identifier
 tok_t* lex_statement(proj_t* proj) {
     tok_t* statement, *tok;
     if (!(statement=lex_ident(proj))) {
@@ -19,19 +18,9 @@ tok_t* lex_statement(proj_t* proj) {
         if (!statement) return NULL;
         else if (statement->type==oper_cbracket_close) goto ret;
         else if (statement->type==oper_cbracket_open) {
-            statement->type = statement_block;
-            tok_t* sfst = allocpy(&(tok_t){.type=sfs}, sizeof(tok_t));
-            size_t index = index_append((void***)&statement->file->tstack, sfst);
-
-            while ((tok=lex_statement(proj))&&tok->type!=oper_cbracket_close)
-                index_append((void***)&statement->contents, tok);
-            free(tok);
-
-            ((size_t*)statement->file->tstack)[1] = index;
-
-            memset(((void**)statement->file->tstack)+2+index, 0, (((size_t*)statement->file->tstack)[0]-index)*sizeof(void*));
-            free(sfst);
-
+            proj->last_tok = statement;
+            void lex_block(proj_t* proj);
+            lex_block(proj);
             goto ret;
         } else return NULL;
     } if (statement->type==kw_solid) {
@@ -49,12 +38,12 @@ tok_t* lex_statement(proj_t* proj) {
 
     // TODO: account for: var <oper>
     if (tok_(0)->type==var_ident) {
-        // log("ADASASD COLLISION");
+        log("ADASASD COLLISION");
 
 
         goto ret;
-    }
-    else if (!tok_(2)||tok_(2)->type != oper_rbracket_open) {
+    } else
+    if (!tok_(2)||tok_(2)->type != oper_rbracket_open) {
         // runs if no operator or it's not '('
         bool invalid_declaration = 0;
         if (types[tok_(0)->type]&&tok_(1)&&tok_(1)->type==type_ident) {
@@ -65,10 +54,8 @@ tok_t* lex_statement(proj_t* proj) {
         } else if (types[tok_(0)->type]&&tok_(1)&&tok_(1)->type==var_ident) {
             // runs if it's a kw that can be used for var declaration and
             // the var name is already used
-            if (tok_(1)->file->tstack) {
-                size_t i = (size_t)tok_(1)->file->tstack[1];
-                // debug(i);
-                // if (i==)
+            size_t i = tok_(1)->file->tstack?(size_t)tok_(1)->file->tstack[1]:0;
+            if (i>0) {
                 while (i--) {
                     tok_t* t = tok_(1)->file->tstack[i+2];
                     if (t->type==var_decl&&!strncmp(t->start, tok_(1)->start, min(t->len, tok_(1)->len)))
@@ -79,12 +66,29 @@ tok_t* lex_statement(proj_t* proj) {
                         invalid_declaration=1;
                     if (t->type==sfs||invalid_declaration) break;
                 }
+            } else {
+                i = (size_t)tok_(1)->file->locals[1];
+                while (i--) {
+                tok_t* t = tok_(1)->file->locals[i+2];
+                if (t->type==var_decl&&!strncmp(t->start, tok_(1)->start, min(t->len, tok_(1)->len)))
+                    invalid_declaration=1;
+                else if (t->type==type_decl&&!strncmp(t->start, tok_(1)->start, min(t->len, tok_(1)->len)))
+                    invalid_declaration=1;
+                else if (t->type==func_decl&&!strncmp(t->start, tok_(1)->start, min(t->len, tok_(1)->len)))
+                    invalid_declaration=1;
+                if (invalid_declaration) break;}
             }
-            invalid_declaration = invalid_declaration&&((size_t)tok_(1)->file->tstack[1]>1);
+            i = tok_(1)->file->tstack?(size_t)tok_(1)->file->tstack[1]:0;
+            // invalid_declaration = invalid_declaration&&i>1;
             if (invalid_declaration) {
+                lexer_error(tok_(1), "error");
                 log("error: identifier '%.*s' is already in use, can't declare twice", (int)tok_(1)->len, tok_(1)->start);
                 goto error;
             }
+            tok_t* semicolon = index_pop((void***)&statement->contents);
+            if (semicolon&&semicolon->type!=oper_semicolon)
+                undo(proj, semicolon);
+            free(semicolon);
         } else if (types[tok_(0)->type]&&tok_(2)&&tok_(2)->type==oper_assign) {
             tok_t* val = lex_value(proj);
             if (!val) {
@@ -101,7 +105,7 @@ tok_t* lex_statement(proj_t* proj) {
                 undo(proj, semicolon);
             free(semicolon);
         }
-        if (!invalid_declaration&&(tok_(1)->type==ident||tok_(1)->type==var_ident||tok_(1)->type==func_ident)) {
+        if (tok_(1)&&!invalid_declaration&&(tok_(1)->type==ident||tok_(1)->type==var_ident||tok_(1)->type==func_ident)) {
             statement->file = tok_(1)->file;
             statement->len = tok_(1)->len;
             statement->line = tok_(1)->line;
@@ -115,6 +119,7 @@ tok_t* lex_statement(proj_t* proj) {
     }
 ret:
     size_t i = statement->file->tstack?(size_t)statement->file->tstack[1]:0;
+    // debug(i);
     if (i==0) {
         if (!statement->solid) index_append((void***)&file_top(proj)->globals, statement);
         return (index_append((void***)&file_top(proj)->locals, statement),statement);

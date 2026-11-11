@@ -39,6 +39,7 @@ typedef struct token {
     bool solid;
 } tok_t;
 
+typedef struct project proj_t;
 typedef struct file {
     int fd;
     char* path;
@@ -52,6 +53,7 @@ typedef struct file {
     tok_t** globals;
     tok_t** locals;
     tok_t** tstack;
+    proj_t* proj;
 } file_t;
 
 typedef struct project { //"env"
@@ -59,6 +61,7 @@ typedef struct project { //"env"
     file_t** files;
     tok_t* main_func;
     tok_t* last_tok;
+    jmp_buf* jump;
 } proj_t;
 
 #endif

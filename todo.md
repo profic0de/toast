@@ -1,1 +1,1 @@
-[ ] make the stack var declaration work
+[x] make the stack var declaration work

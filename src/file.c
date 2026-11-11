@@ -1,11 +1,17 @@
 #include "kit.h"
 
 file_t* open_file(proj_t* proj, char* path) {
-    if (!path) return NULL;
+    if (!proj||!path) return NULL;
+    if (!proj->jump) {
+        jmp_buf env;
+        if (setjmp(env)) return NULL;
+        else proj->jump = allocpy(&env, sizeof(env));
+    }
     int fd = open(path, O_RDONLY);
     if (fd == -1) return NULL;
     size_t len = lseek(fd, 0, SEEK_END); lseek(fd, 0, SEEK_SET);
     file_t f = {0};
+    f.proj = proj;
     f.path = realpath(path, NULL);
     file_t** files = proj->files;
     if (files) {
