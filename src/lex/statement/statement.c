@@ -14,23 +14,20 @@ static void start() {
 tok_t* lex_statement(proj_t* proj) {
     tok_t* statement, *tok;
     if (!(statement=lex_ident(proj))) {
-        statement=lex_operator(proj);
-        if (!statement) return NULL;
+        if (!(statement=lex_operator(proj))) return NULL;
         else if (statement->type==oper_cbracket_close) goto ret;
         else if (statement->type==oper_cbracket_open) {
             proj->last_tok = statement;
             void lex_block(proj_t* proj);
             lex_block(proj);
             goto ret;
-        } else return NULL;
+        } else lexer_error(statement, "no idea what this is for");
     } if (statement->type==kw_solid) {
         free(statement);
         if (!(statement=lex_ident(proj)))
             return NULL;
         else ++statement->solid;
     }
-
-    #define tok_(i) ((size_t)statement->contents[1]>i?statement->contents[i+2]:NULL)
 
     index_append((void***)&statement->contents, allocpy(statement, sizeof(tok_t)));
     if ((tok=lex_ident(proj))) index_append((void***)&statement->contents, tok);

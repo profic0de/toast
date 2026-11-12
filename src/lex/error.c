@@ -27,7 +27,7 @@ void* lexer_error(tok_t* tok, char* msg) {
         len = min(len, space);
     }
 
-    printf(asd, tok->line, (int)(len-digits+2), sws);
+    printf(asd, tok->line, (int)(len-digits+1), sws);
     len = digits+2; while (len--) putc(' ', stdout); putc('|', stdout);
     
     len = min(prefix_len, (space/5))+1;
