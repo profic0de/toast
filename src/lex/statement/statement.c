@@ -28,6 +28,7 @@ tok_t* lex_statement(proj_t* proj) {
             return NULL;
         else ++statement->solid;
     }
+    proj->last_tok = statement;
 
     index_append((void***)&statement->contents, allocpy(statement, sizeof(tok_t)));
     if ((tok=lex_ident(proj))) index_append((void***)&statement->contents, tok);
