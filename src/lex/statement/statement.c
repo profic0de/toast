@@ -31,8 +31,9 @@ tok_t* lex_statement(proj_t* proj) {
     proj->last_tok = statement;
 
     index_append((void***)&statement->contents, allocpy(statement, sizeof(tok_t)));
-    if ((tok=lex_ident(proj))) index_append((void***)&statement->contents, tok);
-    if ((tok=lex_operator(proj))) index_append((void***)&statement->contents, tok);
+    // if ((tok=lex_ident(proj))) index_append((void***)&statement->contents, tok);
+    // if ((tok=lex_operator(proj))) index_append((void***)&statement->contents, tok);
+    if (types[statement->type]&&lex_decl(proj)) goto ret;
 
     // TODO: account for: var <oper>
     if (tok_(0)->type==var_ident) {

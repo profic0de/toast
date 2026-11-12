@@ -45,8 +45,6 @@ tok_t* lex_ident(proj_t* proj) {
             tok_t* t = file->tstack[i+2];
             if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
                 tok.type = var_ident;
-            else if (t->type==type_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
-                tok.type = type_ident;
             else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
                 tok.type = func_ident;
             if (tok.type!=ident) break;

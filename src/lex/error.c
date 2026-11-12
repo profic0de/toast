@@ -21,7 +21,7 @@ void* lexer_error(tok_t* tok, char* msg) {
     if (true) {
         size_t n = tok->line; while (n/=10) digits++;
 
-        sws = tok->start-min(prefix_len, (space/5)), len = 0;
+        sws = tok->start-min(prefix_len, (space/5)), len = min(prefix_len, (space/5));
         char* sws = tok->start;
         while (sws[0]&&sws[0]!='\n') len += !!(sws++);
         len = min(len, space);
