@@ -28,11 +28,14 @@ void cpy_all(tok_t* dest, tok_t* src) {
 
 tok_t* lex_decl(proj_t* proj) {
     // <type> <ident>
-    tok_t* decl = proj->last_tok, *tok=lex_ident(proj);
+    tok_t* decl = proj->last_tok, *tok=lex_ident(proj), *oper;
     check_if_declarable(tok);
     index_append((void***)&decl->contents, tok);
     cpy_all(decl, tok);
     decl->type = var_decl;
+    if (!(oper=lex_operator(proj))) return decl;
+    if (oper->type!=oper_semicolon) undo(oper);
+    
 
     return decl;
 }

@@ -86,7 +86,7 @@ tok_t* lex_statement(proj_t* proj) {
             }
             tok_t* semicolon = index_pop((void***)&statement->contents);
             if (semicolon&&semicolon->type!=oper_semicolon)
-                undo(proj, semicolon);
+                undo(semicolon);
             free(semicolon);
         } else if (types[tok_(0)->type]&&tok_(2)&&tok_(2)->type==oper_assign) {
             tok_t* val = lex_value(proj);
@@ -97,11 +97,11 @@ tok_t* lex_statement(proj_t* proj) {
             index_append((void***)&statement->contents, val);
             tok_t* semicolon = lex_operator(proj);
             if (semicolon&&semicolon->type!=oper_semicolon)
-                undo(proj, semicolon);
+                undo(semicolon);
         } else if (tok_(2)) {
             tok_t* semicolon = index_pop((void***)&statement->contents);
             if (semicolon&&semicolon->type!=oper_semicolon)
-                undo(proj, semicolon);
+                undo(semicolon);
             free(semicolon);
         }
         if (tok_(1)&&!invalid_declaration&&(tok_(1)->type==ident||tok_(1)->type==var_ident||tok_(1)->type==func_ident)) {

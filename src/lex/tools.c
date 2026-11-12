@@ -54,9 +54,9 @@ void unfold(tok_t* tok, size_t shift) {
 }
 
 // intended for simple tokens, may not work with complex ones
-void undo(proj_t* proj, tok_t* tok) {
+void undo(tok_t* tok) {
     if (!tok) return;
-    file_t* file = file_top(proj);
+    file_t* file = tok->file;
     file->contents.ptr = tok->start;
     file->contents.newlines = tok->line;
     file->contents.line_start = tok->line_start;

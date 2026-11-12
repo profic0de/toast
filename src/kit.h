@@ -44,7 +44,7 @@ tok_t* lex_operator(proj_t* proj);
 tok_t* lex_value(proj_t* proj);
 
 void destroy(tok_t* tok);
-void undo(proj_t* proj, tok_t* tok);
+void undo(tok_t* tok);
 void unfold(tok_t* tok, size_t shift);
 
 #endif
