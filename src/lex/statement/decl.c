@@ -27,8 +27,11 @@ void cpy_all(tok_t* dest, tok_t* src) {
 }
 
 tok_t* lex_decl(proj_t* proj) {
+    static tok_t* nil; if (!nil)
+        nil = allocpy(&(tok_t){.len=6, .start="(nil)"}, sizeof(tok_t));
+    
     // <type> <ident>
-    tok_t* decl = proj->last_tok, *tok=lex_ident(proj), *oper, *oper1;
+    tok_t* decl = proj->last_tok, *tok=lex_ident(proj), *oper, *oper1=NULL;
     check_if_declarable(tok);
     index_append((void***)&decl->contents, tok);
     cpy_all(decl, tok);
@@ -38,16 +41,21 @@ tok_t* lex_decl(proj_t* proj) {
         // <type> <ident> [<val>,..]
         index_append((void***)&decl->contents, oper);
         for (;;) {
-            if ((tok=lex_value(proj))) index_append((void***)&oper->contents, tok);
+            index_append((void***)&oper->contents, (tok=lex_value(proj))?tok:nil);
+            free(oper1);
             if (!(oper1=lex_operator(proj))) lexer_error(tok?tok:oper, "operator was expected after this token");
             if (oper1->type==oper_comma) continue;
             break;
         }
         if (oper1->type!=oper_sbracket_close) lexer_error(oper, "closing bracket was expected instead");
+        free(oper1);
+        oper = lex_operator(proj);
+        if (!oper) return decl;
     }
-    if (oper1->type==oper_semicolon) return decl;
-    else undo(oper1);
-    
+    if (oper->type!=oper_assign) return (undo(oper), decl);
+    // = <val>
+    index_append((void***)&decl->contents, (tok=lex_value(proj)));
+    if (!tok) lexer_error(oper, "No value can be assigned");
 
     return decl;
 }

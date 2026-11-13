@@ -13,7 +13,7 @@ typedef struct token {
         // NOTE: Don't forget to update:
         //      > statement.c:6
         //      > ident.c:3
-        eof, ident, type, sfs, // stack frame start
+        empty, ident, type, sfs, // stack frame start
         var_ident, type_ident, func_ident,
         var_decl, type_decl,
         func_decl, statement_block,
