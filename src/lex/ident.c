@@ -4,6 +4,8 @@ static size_t kws[] = {
     s8("func"), s8("return"),
     s8("var"), s8("let"), s8("type"),
     s8("solid"), s8("sol"),
+    s8("u8"), s8("u16"), s8("u32"), s8("u64"),
+    s8("i8"), s8("i16"), s8("i32"), s8("i64"),
 };
 
 tok_t* lex_ident(proj_t* proj) {
@@ -25,8 +27,9 @@ tok_t* lex_ident(proj_t* proj) {
         while (i--) if (kws[i]==t) i=!(tok.type=kw+i+1);
         // debug(tok.type);
         if (tok.type==kw_sol) tok.type=kw_solid;
+        if (tok.type>=kw_u8&&tok.type<=kw_i64) tok.type=type;
     }
-    if (tok.type!=ident) return rtok(proj, &tok);
+    if (tok.type!=ident) return rtok(&tok);
     if (file->locals) {
         size_t i = (size_t)file->locals[1];
         while (i--) {
@@ -52,5 +55,5 @@ tok_t* lex_ident(proj_t* proj) {
         }
     }
 
-    return rtok(proj, &tok);
+    return rtok(&tok);
 }

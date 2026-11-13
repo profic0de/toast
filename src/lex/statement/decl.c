@@ -55,7 +55,7 @@ tok_t* lex_decl(proj_t* proj) {
     if (oper->type!=oper_assign) return (undo(oper), decl);
     // = <val>
     index_append((void***)&decl->contents, (tok=lex_value(proj)));
-    if (!tok) lexer_error(oper, "No value can be assigned");
+    if (!tok) lexer_error(oper, "Empty value cannot be assigned");
 
     return decl;
 }

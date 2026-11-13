@@ -1,7 +1,7 @@
 #include "kit.h"
 
 inline file_t* file_top(proj_t* proj) {return (file_t*)index_top((void***)&proj->fstack);}
-inline tok_t* rtok(proj_t* proj, tok_t* tok) {return (proj->last_tok = allocpy(tok, sizeof(tok_t)));}
+inline tok_t* rtok(tok_t* tok) {return (tok->file->proj->last_tok = allocpy(tok, sizeof(tok_t)));}
 // allocate tok and store it in locals of top file
 inline tok_t* rlcl(proj_t* proj, tok_t* tok) {
     tok_t*t=allocpy(tok, sizeof(tok_t));

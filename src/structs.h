@@ -17,11 +17,13 @@ typedef struct token {
         var_ident, type_ident, func_ident,
         var_decl, type_decl,
         func_decl, statement_block,
-        declaration, 
+        declaration, value, numeric_value,
         kw, // oder sensitive
             kw_func, kw_return,
             kw_var, kw_let, kw_type,
             kw_solid, kw_sol,
+            kw_u8, kw_u16, kw_u32, kw_u64,
+            kw_i8, kw_i16, kw_i32, kw_i64,
         oper,
             oper_semicolon, 
             oper_rbracket_open, oper_rbracket_close, // round brackets '()'
