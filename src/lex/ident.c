@@ -26,6 +26,7 @@ tok_t* lex_ident(proj_t* proj) {
         // debug(tok.type);
         if (tok.type==kw_sol) tok.type=kw_solid;
     }
+    if (tok.type!=ident) return rtok(proj, &tok);
     if (file->locals) {
         size_t i = (size_t)file->locals[1];
         while (i--) {

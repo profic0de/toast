@@ -1,4 +1,4 @@
 # A comment
 # Another one
-func fn
+func fn[,] = [1,2]
 func fn

@@ -2,7 +2,7 @@
 
 void check_if_declarable(tok_t* tok) {
     file_t* file = tok->file;
-    char* msg = "This identifier is allready being used";
+    char* msg = "This identifier is already being used";
     if (tok->type==ident||tok->type==type_ident) return;
     if (tok->type==var_ident||tok->type==func_ident) {
         tok_t** tstack = file->tstack;
@@ -28,13 +28,25 @@ void cpy_all(tok_t* dest, tok_t* src) {
 
 tok_t* lex_decl(proj_t* proj) {
     // <type> <ident>
-    tok_t* decl = proj->last_tok, *tok=lex_ident(proj), *oper;
+    tok_t* decl = proj->last_tok, *tok=lex_ident(proj), *oper, *oper1;
     check_if_declarable(tok);
     index_append((void***)&decl->contents, tok);
     cpy_all(decl, tok);
     decl->type = var_decl;
     if (!(oper=lex_operator(proj))) return decl;
-    if (oper->type!=oper_semicolon) undo(oper);
+    if (oper->type==oper_sbracket_open) {
+        // <type> <ident> [<val>,..]
+        index_append((void***)&decl->contents, oper);
+        for (;;) {
+            if ((tok=lex_value(proj))) index_append((void***)&oper->contents, tok);
+            if (!(oper1=lex_operator(proj))) lexer_error(tok?tok:oper, "operator was expected after this token");
+            if (oper1->type==oper_comma) continue;
+            break;
+        }
+        if (oper1->type!=oper_sbracket_close) lexer_error(oper, "closing bracket was expected instead");
+    }
+    if (oper1->type==oper_semicolon) return decl;
+    else undo(oper1);
     
 
     return decl;

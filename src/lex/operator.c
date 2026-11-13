@@ -5,6 +5,7 @@ __attribute__((constructor))
 static void start() {
     uint8_t var_types[] = {
         ';', '(', ')', '[', ']', '{', '}',
+        ',',
     };
     size_t i = sizeof(var_types);
     while (i--) single[var_types[i]] = i+1;
