@@ -41,6 +41,7 @@ void destroy(tok_t* tok) {
     tok_t* t;
     while ((t = index_pop((void***)&tok->contents))) destroy(t);
     free(tok->contents);
+    free(tok);
 }
 
 void unfold(tok_t* tok, size_t shift) {
