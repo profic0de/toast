@@ -15,8 +15,12 @@ tok_t* lex_statement(proj_t* proj) {
     tok_t* statement;
     if (!(statement=lex_ident(proj))) {
         if (!(statement=lex_operator(proj))) return NULL;
-        else if (statement->type==oper_semicolon) return lex_statement(proj);
-        else if (statement->type==oper_cbracket_close) goto ret;
+        else if (statement->type==oper_semicolon) {
+            free(statement);
+            if (!(statement=lex_statement(proj)))
+                return NULL;
+            goto ret;
+        } else if (statement->type==oper_cbracket_close) goto ret;
         else if (statement->type==oper_cbracket_open) {
             proj->last_tok = statement;
             void lex_block(proj_t* proj);

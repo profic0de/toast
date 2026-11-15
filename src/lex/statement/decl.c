@@ -53,7 +53,7 @@ tok_t* lex_decl(proj_t* proj) {
         if (!oper) return decl;
     }
     // TODO: Also handle function declaration: (decl,..) statement
-    if (oper->type!=oper_assign) return (undo(oper->type!=oper_semicolon?oper:NULL), decl);
+    if (oper->type!=oper_assign) return (undo(oper), decl);
     // = <val>;
     index_append((void***)&decl->contents, (tok=lex_value(proj)));
     if (!tok) lexer_error(oper, "Empty value cannot be assigned");
