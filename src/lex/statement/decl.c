@@ -52,10 +52,15 @@ tok_t* lex_decl(proj_t* proj) {
         oper = lex_operator(proj);
         if (!oper) return decl;
     }
-    if (oper->type!=oper_assign) return (undo(oper), decl);
-    // = <val>
+    if (oper->type!=oper_assign) return (undo(oper->type!=oper_semicolon?oper:NULL), decl);
+    // = <val>;
     index_append((void***)&decl->contents, (tok=lex_value(proj)));
     if (!tok) lexer_error(oper, "Empty value cannot be assigned");
-
+    free(oper);
+    if ((oper=lex_operator(proj))) {
+        if (oper->type!=oper_semicolon)
+            undo(oper);
+        else free(oper);
+    }
     return decl;
 }

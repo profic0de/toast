@@ -35,11 +35,11 @@ tok_t* lex_ident(proj_t* proj) {
         while (i--) {
             tok_t* t = file->locals[i+2];
             // unfold(t, 0);
-            if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+            if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)+1))
                 tok.type = var_ident;
-            else if (t->type==type_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+            else if (t->type==type_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)+1))
                 tok.type = type_ident;
-            else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+            else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)+1))
                 tok.type = func_ident;
             if (tok.type!=ident) break;
         }
@@ -47,9 +47,9 @@ tok_t* lex_ident(proj_t* proj) {
         size_t i = (size_t)file->tstack[1];
         while (i--) {
             tok_t* t = file->tstack[i+2];
-            if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+            if (t->type==var_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)+1))
                 tok.type = var_ident;
-            else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)))
+            else if (t->type==func_decl&&!strncmp(t->start, tok.start, min(t->len, tok.len)+1))
                 tok.type = func_ident;
             if (tok.type!=ident) break;
         }
