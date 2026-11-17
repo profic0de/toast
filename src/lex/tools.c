@@ -47,9 +47,11 @@ void destroy(tok_t* tok) {
 void unfold(tok_t* tok, size_t shift) {
     if (!tok) return;
     size_t s=shift, i=-1;
-    while(s--) printf("\t");
-    printf("%.*s (%d)\n", (int)tok->len, tok->start, tok->type);
-    if (tok->contents)
+    if (!tok->len) shift--;
+    if (tok->len) {
+        while(s--) printf("\t");
+        printf("%.*s (%d)\n", (int)tok->len, tok->start, tok->type);
+    } if (tok->contents)
         while (++i<=(size_t)tok->contents[0])
             unfold(tok->contents[i+2], shift+1);
 }

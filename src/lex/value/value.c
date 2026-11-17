@@ -21,8 +21,12 @@ tok_t* lex_value(proj_t* proj) {
                 lexer_error(tok, "The round bracket wasn't closed");
             free(value);
 
-        } else return (free(tok), NULL);
+        } else lexer_error(tok, "Unexpected operator");
     } else return NULL;
+    index_append((void***)&val.contents, tok);
 
-    return tok;
+    // if ((size_t)val.contents[1]==1)
+    //     return (free(val.contents), tok);
+    val.type = value;
+    return rtok(&val);
 }
