@@ -43,7 +43,7 @@ tok_t* lex_value(proj_t* proj) {
         else { undo(tok); break; }
     }
     //TODO: Do some pratt parsing schenanigans or whatever this is called
-    // size_t len = tok->contents?((size_t*)tok->contents)[1]:0;
+    size_t len = val->contents?((size_t*)val->contents)[1]:0;
 
     val.type = value;
     return rtok(&val);
