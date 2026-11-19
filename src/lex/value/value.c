@@ -54,35 +54,36 @@ tok_t* lex_value(proj_t* proj) {
         size_t i = 0;
         while (i<opers) powers[i]=operators[val.contents[i*2+3]->type], i+=1;
         for (;;) {
-            size_t max = 0, i = 0, b, nmax = 0;
+            size_t max = 0, i = 0, in_i=0, nmax = 0;
             while (i<opers) {
                 if (powers[i] >max) max = powers[i], nmax = 0;
                 if (powers[i]==max) nmax += 1;
                 i += 1;
-            } b = 0;
-            size_t j = 0;
+            }
+            // TODO: Fix this
+            size_t out_i = 0;
             while (nmax--) {
-                i = b; while (i<opers) if (powers[i]==max) break; else i += 1; b = i;
+                while (i<opers) if (powers[i]==max) break; else i += 1;
                 tok_t** arr = val.contents+2;
-                size_t i=0, k=b*2+1;
-                while (i<=k) {
-                    arr[j] = arr[i];
-                    if (i==k) {
-                        // TODO: Finish this
+                size_t target=i*2+1;
+                debug(target);
+                while (in_i<target) {
+                    log("%lu %lu", in_i, target);
+                    arr[out_i] = arr[in_i];
+                    if (in_i==target) {
                         tok_t* tok = allocpy(&(tok_t){.type=value}, sizeof(tok_t));
-                        index_append((void***)tok->contents, arr[i+0]);
-                        index_append((void***)tok->contents, arr[i+1]);
-                        index_append((void***)tok->contents, arr[i+2]);
-                        i += 2;
-                        arr[j] = tok;
+                        index_append((void***)tok->contents, arr[in_i+0]);
+                        index_append((void***)tok->contents, arr[in_i+1]);
+                        index_append((void***)tok->contents, arr[in_i+2]);
+                        in_i += 2;
+                        arr[out_i] = tok;
 
                     }
-                    i++, j++;
+                    in_i++, out_i++;
                 }
 
                 // debug(nmax);
             }
-            debug(j);
         }
     }
 
