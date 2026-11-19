@@ -47,11 +47,14 @@ void destroy(tok_t* tok) {
 void unfold(tok_t* tok, size_t shift) {
     if (!tok) return;
     size_t s=shift, i=-1;
-    #define ACCURATE_UNFOLD 0
+    #define ACCURATE_UNFOLD 1
     if (!tok->len&&!ACCURATE_UNFOLD) shift--;
     if (tok->len||ACCURATE_UNFOLD) {
         while(s--) printf("\t");
-        printf("%.*s (%d)\n", (int)tok->len, tok->start, tok->type);
+        printf("%.*s (%d)", (int)tok->len, tok->start, tok->type);
+        if (ACCURATE_UNFOLD&&tok->contents)
+            printf(" [%lu]",((size_t*)tok->contents)[1]);
+        putc('\n', stdout);
     } if (tok->contents)
         while (++i<=(size_t)tok->contents[0])
             unfold(tok->contents[i+2], shift+1);
