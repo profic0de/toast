@@ -1,14 +1,19 @@
 #include "value.h"
 
-static uint8_t operators[256]; // whether an oper can be used as an operator
+static uint8_t operators[256];
 
 __attribute__((constructor))
 static void start() {
-    uint8_t oper_types[] = {
-        oper_addition, oper_substraction,
+    uint8_t precedences[] = {
+        1, oper_addition, oper_substraction,
+        2,
     };
-    size_t i = sizeof(oper_types);
-    while (i--) operators[oper_types[i]]++;
+    size_t val = 0, target = sizeof(precedences), i = 0;
+    while (i<target) {
+        if (precedences[i]<oper) val = precedences[i];
+        else operators[precedences[i]] = val;
+        i += 1;
+    }
 }
 
 tok_t* lex_value(proj_t* proj) {
@@ -43,7 +48,43 @@ tok_t* lex_value(proj_t* proj) {
         else { undo(tok); break; }
     }
     //TODO: Do some pratt parsing schenanigans or whatever this is called
-    size_t len = val.contents?((size_t*)val.contents)[1]:0;
+    size_t opers = ((size_t)val.contents[1]-1)/2;
+    if (opers>1) {
+        uint8_t* powers = malloc(opers);
+        size_t i = 0;
+        while (i<opers) powers[i]=operators[val.contents[i*2+3]->type], i+=1;
+        for (;;) {
+            size_t max = 0, i = 0, b, nmax = 0;
+            while (i<opers) {
+                if (powers[i] >max) max = powers[i], nmax = 0;
+                if (powers[i]==max) nmax += 1;
+                i += 1;
+            } b = 0;
+            size_t j = 0;
+            while (nmax--) {
+                i = b; while (i<opers) if (powers[i]==max) break; else i += 1; b = i;
+                tok_t** arr = val.contents+2;
+                size_t i=0, k=b*2+1;
+                while (i<=k) {
+                    arr[j] = arr[i];
+                    if (i==k) {
+                        // TODO: Finish this
+                        tok_t* tok = allocpy(&(tok_t){.type=value}, sizeof(tok_t));
+                        index_append((void***)tok->contents, arr[i+0]);
+                        index_append((void***)tok->contents, arr[i+1]);
+                        index_append((void***)tok->contents, arr[i+2]);
+                        i += 2;
+                        arr[j] = tok;
+
+                    }
+                    i++, j++;
+                }
+
+                // debug(nmax);
+            }
+            debug(j);
+        }
+    }
 
     val.type = value;
     return rtok(&val);
