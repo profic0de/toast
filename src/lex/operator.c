@@ -43,6 +43,14 @@ tok_t* lex_operator(proj_t* proj) {
         while ((++ptr)[0]=='=') if (++len>=2) break;
         if (len==1) tok.type = oper_assign;
         else tok.len += !!(tok.type=oper_equals);
+    } else if (ptr[0]=='*') {
+        while ((++ptr)[0]=='=') if (++len>=2) break;
+        if (len==1) tok.type = oper_mul;
+        else tok.len += !!(tok.type=oper_mul_assign);
+    } else if (ptr[0]=='/') {
+        while ((++ptr)[0]=='=') if (++len>=2) break;
+        if (len==1) tok.type = oper_div;
+        else tok.len += !!(tok.type=oper_div_assign);
     }
     else return NULL;
 

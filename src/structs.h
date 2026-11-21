@@ -35,6 +35,8 @@ typedef struct token {
             oper_addition, oper_substraction, 
             oper_decr, oper_decr_early, oper_decr_late,
             oper_equals, oper_assign,
+            oper_mul, oper_mul_assign,
+            oper_div, oper_div_assign,
     } type;
     size_t line;
     char* line_start;
