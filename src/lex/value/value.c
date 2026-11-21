@@ -53,38 +53,15 @@ tok_t* lex_value(proj_t* proj) {
         uint8_t* powers = malloc(opers);
         size_t i = 0;
         while (i<opers) powers[i]=operators[val.contents[i*2+3]->type], i+=1;
-        for (;;) {
-            size_t max = 0, i = 0, in_i=0, nmax = 0;
-            while (i<opers) {
-                if (powers[i] >max) max = powers[i], nmax = 0;
-                if (powers[i]==max) nmax += 1;
-                i += 1;
-            }
-            // TODO: Fix this
-            size_t out_i = 0;
-            while (nmax--) {
-                while (i<opers) if (powers[i]==max) break; else i += 1;
-                tok_t** arr = val.contents+2;
-                size_t target=i*2+1;
-                debug(target);
-                while (in_i<target) {
-                    log("%lu %lu", in_i, target);
-                    arr[out_i] = arr[in_i];
-                    if (in_i==target) {
-                        tok_t* tok = allocpy(&(tok_t){.type=value}, sizeof(tok_t));
-                        index_append((void***)tok->contents, arr[in_i+0]);
-                        index_append((void***)tok->contents, arr[in_i+1]);
-                        index_append((void***)tok->contents, arr[in_i+2]);
-                        in_i += 2;
-                        arr[out_i] = tok;
+        i=-1; tok_t** stack = 0, **contents=0; // pratt parsing: budget
+        size_t power = 0;
+        #define oper(i) val.contents[i*2+3]
+        while (++i<opers) {
+            if (power<powers[i]) index_append((void***)&stack, oper(i));
+            // tok_t* tok = allocpy(&(tok_t){.type=value}, sizeof(tok_t));
 
-                    }
-                    in_i++, out_i++;
-                }
-
-                // debug(nmax);
-            }
         }
+        
     }
 
     val.type = value;
