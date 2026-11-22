@@ -59,8 +59,7 @@ tok_t* lex_value(proj_t* proj) {
                     index_append((void***)&node->contents, value);
                     index_append((void***)&val.contents, node);
                 }
-            }
-            else power=operators[tok->type];
+            } else power=operators[tok->type];
             index_append((void***)&opers, tok);
         } else { undo(tok); break; }
     }
