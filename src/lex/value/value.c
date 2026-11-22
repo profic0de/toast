@@ -27,6 +27,7 @@ tok_t* lex_value(proj_t* proj) {
     for (;;) {
         if (!lex_spaces(proj)) return lexer_error(&val, "Unexpected EOF");
         char* ptr = file->contents.ptr;
+        //TODO: Parse more stuff like functions arrays etc.
         if (isdigit(ptr[0])||ptr[0]=='.') tok=lex_num(proj);
         else if (isalpha(ptr[0])) {
             tok=lex_ident(proj);
@@ -43,7 +44,6 @@ tok_t* lex_value(proj_t* proj) {
 
             } else lexer_error(tok, "Unexpected operator");
         } else return NULL;
-        //TODO: Do some pratt parsing schenanigans or whatever this is called
 
         index_append((void***)&val.contents, tok);
         bool stop = false;
