@@ -50,9 +50,7 @@ tok_t* lex_value(proj_t* proj) {
 
         tok = lex_operator(proj);
         if (tok&&operators[tok->type]) {
-            index_append((void***)&opers, tok);
-            if (oper_greater) power=operators[tok->type];
-            else { power=0;
+            if (!oper_greater) { power=0;
                 while (values>1) {
                     tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
                     index_append((void***)&node->contents, index_pop((void***)&opers));
@@ -61,6 +59,8 @@ tok_t* lex_value(proj_t* proj) {
                     index_append((void***)&val.contents, node);
                 }
             }
+            else power=operators[tok->type];
+            index_append((void***)&opers, tok);
         } else { undo(tok); break; }
     }
     while (values>1) {
