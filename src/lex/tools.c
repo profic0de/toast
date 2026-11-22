@@ -48,9 +48,8 @@ void unfold(tok_t* tok, size_t shift) {
     if (!tok) return;
     size_t s=shift, i=-1;
     #define ACCURATE_UNFOLD false
-    bool check = tok->len||tok->type==node_value;
-    if (!check&&!ACCURATE_UNFOLD) shift--;
-    if (check&&(tok->len||ACCURATE_UNFOLD)) {
+    if (!tok->len&&tok->type!=node_value&&!ACCURATE_UNFOLD) shift--;
+    if (tok->len||ACCURATE_UNFOLD) {
         while(s--) printf("      ");
         printf("%.*s (%d)", (int)tok->len, tok->start, tok->type);
         if (ACCURATE_UNFOLD&&tok->contents)
