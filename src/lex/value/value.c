@@ -25,6 +25,7 @@ tok_t* lex_value(proj_t* proj) {
     val.start=file->contents.ptr;
     tok_t** opers = 0;
     for (;;) {
+        if (!lex_spaces(proj)) return lexer_error(&val, "Unexpected EOF");
         char* ptr = file->contents.ptr;
         if (isdigit(ptr[0])||ptr[0]=='.') tok=lex_num(proj);
         else if (isalpha(ptr[0])) {
