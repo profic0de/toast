@@ -53,9 +53,10 @@ tok_t* lex_value(proj_t* proj) {
             if (!oper_greater) { power=0;
                 while (values>1) {
                     tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
+                    tok_t* value = index_pop((void***)&val.contents);
                     index_append((void***)&node->contents, index_pop((void***)&opers));
                     index_append((void***)&node->contents, index_pop((void***)&val.contents));
-                    index_append((void***)&node->contents, index_pop((void***)&val.contents));
+                    index_append((void***)&node->contents, value);
                     index_append((void***)&val.contents, node);
                 }
             }
@@ -65,9 +66,10 @@ tok_t* lex_value(proj_t* proj) {
     }
     while (values>1) {
         tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
+        tok_t* value = index_pop((void***)&val.contents);
         index_append((void***)&node->contents, index_pop((void***)&opers));
         index_append((void***)&node->contents, index_pop((void***)&val.contents));
-        index_append((void***)&node->contents, index_pop((void***)&val.contents));
+        index_append((void***)&node->contents, value);
         index_append((void***)&val.contents, node);
     }
     free(opers);
