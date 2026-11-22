@@ -23,6 +23,7 @@ tok_t* lex_value(proj_t* proj) {
     val.line=file->contents.newlines;
     val.line_start=file->contents.line_start;
     val.start=file->contents.ptr;
+    tok_t** opers = 0; size_t power = 0;
     for (;;) {
         char* ptr = file->contents.ptr;
         if (isdigit(ptr[0])||ptr[0]=='.') tok=lex_num(proj);
@@ -41,57 +42,35 @@ tok_t* lex_value(proj_t* proj) {
 
             } else lexer_error(tok, "Unexpected operator");
         } else return NULL;
+        //TODO: Do some pratt parsing schenanigans or whatever this is called
+        #define oper_greater (operators[tok->type]>power)
+        #define values ((size_t)val.contents[1])
+
         index_append((void***)&val.contents, tok);
 
         tok = lex_operator(proj);
-        if (tok&&operators[tok->type]) index_append((void***)&val.contents, tok);
-        else { undo(tok); break; }
-    }
-    //TODO: Do some pratt parsing schenanigans or whatever this is called
-    size_t opers = ((size_t)val.contents[1]-1)/2;
-    if (opers>1&&true) {
-        uint8_t* powers = malloc(opers);
-        size_t i = 0;
-        while (i<opers) powers[i]=operators[val.contents[i*2+3]->type], i+=1;
-        i=-1; tok_t** stack = 0, **contents=0; // pratt parsing: budget
-        size_t power = 0;
-        #define oper(i) val.contents[i*2+3]
-        #define right(i) val.contents[i*2+2]
-        #define left(i) val.contents[i*2+4]
-        #define last ((size_t)stack[1]==0)
-        while (++i<=opers) {
-            if (i==opers||power>=powers[i]) {
-                tok_t* tok=0; size_t index;
-                while ((index=(size_t)index_pop((void***)&stack))) { index--;
-                    if (!tok) {
-                        tok = allocpy(&(tok_t){.type=value}, sizeof(tok_t));
-                        index_append((void***)&tok->contents, right(index));
-                        index_append((void***)&tok->contents, oper(index));
-                        index_append((void***)&tok->contents, left(index));
-                    } else {
-                        tok_t* right = tok;
-                        tok = allocpy(&(tok_t){.type=value}, sizeof(tok_t));
-                        index_append((void***)&tok->contents, right);
-                        index_append((void***)&tok->contents, oper(index));
-                        index_append((void***)&tok->contents, left(index));
-                    }
-                    if (last) index_append((void***)&contents, tok);
-                    
-                    // debug(index);
+        if (tok&&operators[tok->type]) {
+            index_append((void***)&opers, tok);
+            if (oper_greater) power=operators[tok->type];
+            else { power=0;
+                while (values>1) {
+                    tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
+                    index_append((void***)&node->contents, index_pop((void***)&opers));
+                    index_append((void***)&node->contents, index_pop((void***)&val.contents));
+                    index_append((void***)&node->contents, index_pop((void***)&val.contents));
+                    index_append((void***)&val.contents, node);
                 }
-                power = 0;
-
             }
-            if (i==opers) break;
-            index_append((void***)&stack, (void*)i+1);
-            power = powers[i];
-        }
-        free(val.contents);
-        free(powers);
-        free(stack);
-        val.contents = contents;
-        
+        } else { undo(tok); break; }
     }
+    while (values>1) {
+        tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
+        index_append((void***)&node->contents, index_pop((void***)&opers));
+        index_append((void***)&node->contents, index_pop((void***)&val.contents));
+        index_append((void***)&node->contents, index_pop((void***)&val.contents));
+        index_append((void***)&val.contents, node);
+    }
+    free(opers);
 
     val.type = value;
     return rtok(&val);

@@ -18,6 +18,7 @@ typedef struct token {
         var_decl, type_decl,
         func_decl, statement_block,
         declaration, value, numeric_value,
+        node_value,
         kw, // oder sensitive
             kw_func, kw_return,
             kw_var, kw_let, kw_type,

@@ -47,7 +47,7 @@ void destroy(tok_t* tok) {
 void unfold(tok_t* tok, size_t shift) {
     if (!tok) return;
     size_t s=shift, i=-1;
-    #define ACCURATE_UNFOLD true
+    #define ACCURATE_UNFOLD false
     if (!tok->len&&!ACCURATE_UNFOLD) shift--;
     if (tok->len||ACCURATE_UNFOLD) {
         while(s--) printf("\t");
