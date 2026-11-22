@@ -23,7 +23,7 @@ tok_t* lex_value(proj_t* proj) {
     val.line=file->contents.newlines;
     val.line_start=file->contents.line_start;
     val.start=file->contents.ptr;
-    tok_t** opers = 0; size_t power = 0;
+    tok_t** opers = 0;
     for (;;) {
         char* ptr = file->contents.ptr;
         if (isdigit(ptr[0])||ptr[0]=='.') tok=lex_num(proj);
@@ -43,33 +43,29 @@ tok_t* lex_value(proj_t* proj) {
             } else lexer_error(tok, "Unexpected operator");
         } else return NULL;
         //TODO: Do some pratt parsing schenanigans or whatever this is called
-        #define oper_greater (operators[tok->type]>power)
-        #define values ((size_t)val.contents[1])
 
         index_append((void***)&val.contents, tok);
-
+        bool stop = false;
         tok = lex_operator(proj);
-        if (tok&&operators[tok->type]) {
-            if (!oper_greater) { power=0;
-                while (values>1) {
-                    tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
-                    tok_t* value = index_pop((void***)&val.contents);
-                    index_append((void***)&node->contents, index_pop((void***)&opers));
-                    index_append((void***)&node->contents, index_pop((void***)&val.contents));
-                    index_append((void***)&node->contents, value);
-                    index_append((void***)&val.contents, node);
-                }
-            } else power=operators[tok->type];
-            index_append((void***)&opers, tok);
-        } else { undo(tok); break; }
-    }
-    while (values>1) {
-        tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
-        tok_t* value = index_pop((void***)&val.contents);
-        index_append((void***)&node->contents, index_pop((void***)&opers));
-        index_append((void***)&node->contents, index_pop((void***)&val.contents));
-        index_append((void***)&node->contents, value);
-        index_append((void***)&val.contents, node);
+        if (tok&&operators[tok->type]);
+        else undo(tok), stop++, tok=0;
+
+        #define power(tok) (tok?operators[tok->type]:0)
+
+        tok_t* last = index_top((void***)&opers);
+        while (last&&power(last)>=power(tok)) {
+            tok_t* node = allocpy(&(tok_t){.type=node_value}, sizeof(tok_t));
+            tok_t* value = index_pop((void***)&val.contents);
+            index_append((void***)&node->contents, index_pop((void***)&opers));
+            index_append((void***)&node->contents, index_pop((void***)&val.contents));
+            index_append((void***)&node->contents, value);
+            index_append((void***)&val.contents, node);
+
+            last = index_top((void***)&opers);
+        }
+
+        if (stop) break; 
+        index_append((void***)&opers, tok);
     }
     free(opers);
 
