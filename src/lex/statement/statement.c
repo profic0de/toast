@@ -26,7 +26,7 @@ tok_t* lex_statement(proj_t* proj) {
     } if (statement->type==kw_solid) {
         tok_t* tmp = statement;
         if (!(statement=lex_ident(proj))||!types[statement->type]) 
-            lexer_error(tmp, "a declaration was expected after the solid kw");
+            lexer_error(tmp, "a declaration was expected after the solid token");
         else statement->solid++;
         free(tmp);
     }
