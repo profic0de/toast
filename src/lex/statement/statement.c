@@ -15,12 +15,8 @@ tok_t* lex_statement(proj_t* proj) {
     tok_t* statement;
     if (!(statement=lex_ident(proj))) {
         if (!(statement=lex_operator(proj))) return NULL;
-        else if (statement->type==oper_semicolon) {
-            free(statement);
-            if (!(statement=lex_statement(proj)))
-                return NULL;
-            goto ret;
-        } else if (statement->type==oper_cbracket_close) goto ret;
+        else if (statement->type==oper_semicolon) { statement->type=empty; goto ret; }
+        else if (statement->type==oper_cbracket_close) goto ret;
         else if (statement->type==oper_cbracket_open) {
             proj->last_tok = statement;
             void lex_block(proj_t* proj);
@@ -28,10 +24,11 @@ tok_t* lex_statement(proj_t* proj) {
             goto ret;
         } else lexer_error(statement, "no idea what this is for");
     } if (statement->type==kw_solid) {
-        free(statement);
-        if (!(statement=lex_ident(proj)))
-            return NULL;
-        else ++statement->solid;
+        tok_t* tmp = statement;
+        if (!(statement=lex_ident(proj))||!types[statement->type]) 
+            lexer_error(tmp, "a declaration was expected after the solid kw");
+        else statement->solid++;
+        free(tmp);
     }
     proj->last_tok = statement;
 
