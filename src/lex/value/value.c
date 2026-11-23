@@ -37,7 +37,11 @@ tok_t* lex_value(proj_t* proj) {
             if (tok->type==oper_rbracket_open) {
                 tok_t* value = lex_value(proj);
                 if (!value) lexer_error(tok, "A value was expected afterwards");
-                index_append((void***)&tok->contents, value);
+                // index_append((void***)&tok->contents, value);
+                tok->contents = value->contents[2]->contents;
+                free(value->contents[2]);
+                free(value->contents);
+                free(value);
                 if (!(value=lex_operator(proj))||value->type!=oper_rbracket_close)
                     lexer_error(tok, "The round bracket wasn't closed");
                 free(value);
