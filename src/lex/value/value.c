@@ -69,7 +69,7 @@ tok_t* lex_value(proj_t* proj) {
             last = index_top((void***)&opers);
         }
 
-        if (stop) break; 
+        if (stop) break;
         index_append((void***)&opers, tok);
     }
     free(opers);

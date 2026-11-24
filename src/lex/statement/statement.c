@@ -39,6 +39,7 @@ tok_t* lex_statement(proj_t* proj) {
 ret:
     size_t i = statement->file->tstack?(size_t)statement->file->tstack[1]:0;
     // debug(i);
+    // FIXME: 
     if (i==0) {
         if (!statement->solid) index_append((void***)&file_top(proj)->globals, statement);
         return (index_append((void***)&file_top(proj)->locals, statement),statement);

@@ -3,8 +3,8 @@
 void check_if_declarable(tok_t* tok) {
     file_t* file = tok->file;
     char* msg = "This identifier is already being used";
-    if (tok->type==ident||tok->type==type_ident) return;
-    if (tok->type==var_ident||tok->type==func_ident) {
+    if (tok->type==ident||tok->type==type_ident||tok->type==func_ident) return;
+    if (tok->type==var_ident) {
         tok_t** tstack = file->tstack;
         if (!tstack||!(size_t)tstack[1]) lexer_error(tok, msg);
         size_t i = (size_t)tstack[1];

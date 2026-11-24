@@ -1,7 +1,7 @@
 # A comment
 # Another one
-u8 val;
-u8 val = 1+2*3+(2*3)*4/4+2
+u8 val
+u8 val1 = 1+2*3+(2*3)*4/4+2
 u16 v = 1 + 2 
 
 # func fn[,] = [1,2]
