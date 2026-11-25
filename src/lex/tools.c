@@ -2,7 +2,7 @@
 
 inline file_t* file_top(proj_t* proj) {return (file_t*)index_top((void***)&proj->fstack);}
 inline tok_t* rtok(tok_t* tok) {
-    if (tok->file->proj) return (tok->file->proj->last_tok = get_tok(tok->file->proj));
+    if (tok->file->proj->allocated_tok) return (tok->file->proj->last_tok = get_tok(tok->file->proj));
     return (tok->file->proj->last_tok = allocpy(tok, sizeof(tok_t)));
 }
 // allocate tok and store it in locals of top file
