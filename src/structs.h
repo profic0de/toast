@@ -68,6 +68,10 @@ typedef struct project { //"env"
     tok_t* main_func;
     tok_t* last_tok;
     jmp_buf* jump;
+
+    // for internal needs
+    tok_t* allocated_tok;
+    tok_t* stored_allocated_tok;
 } proj_t;
 
 #endif

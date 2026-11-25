@@ -13,6 +13,7 @@ static void start() {
 
 tok_t* lex_statement(proj_t* proj) {
     tok_t* statement;
+    // TODO: "Migrate" to the lex_type function
     if (!(statement=lex_ident(proj))) {
         if (!(statement=lex_operator(proj))) return NULL;
         else if (statement->type==oper_semicolon) { statement->type=empty; goto ret; }
@@ -25,21 +26,21 @@ tok_t* lex_statement(proj_t* proj) {
         } else lexer_error(statement, "no idea what this is for");
     } if (statement->type==kw_solid) {
         tok_t* tmp = statement;
-        if (!(statement=lex_ident(proj))||!decl[statement->type]) 
+        if (!lex_type(proj))
             lexer_error(tmp, "a declaration was expected after the solid token");
-        else statement->solid++;
+        else statement=proj->last_tok, statement->solid++;
         free(tmp);
     }
-    proj->last_tok = statement;
+    proj->allocated_tok = statement;
 
     index_append((void***)&statement->contents, allocpy(statement, sizeof(tok_t)));
-    if (decl[statement->type]&&lex_decl(proj)) goto ret;
     
-
+    if (lex_type(proj)&&lex_decl(proj)) goto ret;
+    
+    return (free(statement), NULL);
 ret:
     size_t i = statement->file->tstack?(size_t)statement->file->tstack[1]:0;
     // debug(i);
-    // FIXME: 
     if (i==0) {
         if (!statement->solid) index_append((void***)&file_top(proj)->globals, statement);
         return (index_append((void***)&file_top(proj)->locals, statement),statement);

@@ -42,6 +42,9 @@ tok_t* rtok(tok_t* tok);
 tok_t* rlcl(proj_t* proj, tok_t* tok);
 tok_t* lex_operator(proj_t* proj);
 tok_t* lex_value(proj_t* proj);
+tok_t* lex_type(proj_t* proj);
+tok_t* get_tok(proj_t* proj);
+void set_tok(proj_t* proj);
 
 void destroy(tok_t* tok);
 void undo(tok_t* tok);

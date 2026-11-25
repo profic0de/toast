@@ -1,7 +1,10 @@
 #include "kit.h"
 
 inline file_t* file_top(proj_t* proj) {return (file_t*)index_top((void***)&proj->fstack);}
-inline tok_t* rtok(tok_t* tok) {return (tok->file->proj->last_tok = allocpy(tok, sizeof(tok_t)));}
+inline tok_t* rtok(tok_t* tok) {
+    if (tok->file->proj) return (tok->file->proj->last_tok = get_tok(tok->file->proj));
+    return (tok->file->proj->last_tok = allocpy(tok, sizeof(tok_t)));
+}
 // allocate tok and store it in locals of top file
 inline tok_t* rlcl(proj_t* proj, tok_t* tok) {
     tok_t*t=allocpy(tok, sizeof(tok_t));
@@ -11,6 +14,9 @@ inline tok_t* rlcl(proj_t* proj, tok_t* tok) {
         return (index_append((void***)&file_top(proj)->locals, t),t);
     } else return (index_append((void***)&file_top(proj)->tstack, t),t);
 }
+
+inline tok_t* get_tok(proj_t* proj) {proj->stored_allocated_tok = proj->allocated_tok, proj->allocated_tok = NULL; return proj->stored_allocated_tok;}
+inline void set_tok(proj_t* proj) {proj->allocated_tok = proj->stored_allocated_tok;}
 
 bool lex_spaces(proj_t* proj) {
     file_t* file = file_top(proj);
